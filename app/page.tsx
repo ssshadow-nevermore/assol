@@ -1,17 +1,7 @@
 import Image from "next/image";
+import { catalogCategories } from "./services-data";
 
 const bookingUrl = "/booking";
-
-const services = [
-  { number: "01", title: "Окрашивание", text: "Тон в тон, сложные техники и бережный уход", price: "от 2 000 ₽" },
-  { number: "02", title: "Женские стрижки", text: "Форма, которая легко укладывается каждый день", price: "от 900 ₽" },
-  { number: "03", title: "Мужские стрижки", text: "Классика, современные формы и оформление бороды", price: "от 700 ₽" },
-  { number: "04", title: "Маникюр", text: "Аккуратная обработка и стойкое покрытие", price: "от 1 000 ₽" },
-  { number: "05", title: "Педикюр", text: "Комфортный уход и безупречный результат", price: "от 1 600 ₽" },
-  { number: "06", title: "Брови и ресницы", text: "Архитектура, окрашивание и ламинирование", price: "от 600 ₽" },
-  { number: "07", title: "Депиляция", text: "Гладкость и деликатный профессиональный уход", price: "от 600 ₽" },
-  { number: "08", title: "Массаж", text: "Расслабляющие сеансы для лёгкости и восстановления", price: "по записи" },
-];
 
 const works = [
   { src: "/images/gallery-9.webp", alt: "Окрашивание и женская стрижка в салоне Ассоль", label: "Окрашивание · Стрижка" },
@@ -79,11 +69,32 @@ export default function Home() {
         <section className="marquee" aria-label="Направления салона"><div>СТРИЖКИ <i>✦</i> ОКРАШИВАНИЕ <i>✦</i> МАНИКЮР <i>✦</i> БРОВИ <i>✦</i> УХОД</div></section>
 
         <section className="section services" id="services">
-          <div className="section-heading"><div><p className="eyebrow">Услуги и цены</p><h2>Всё для вашего<br /><em>образа и настроения</em></h2></div><p>Прозрачные ориентиры по стоимости. Точную цену мастер назовёт после короткой консультации.</p></div>
-          <div className="service-list">
-            {services.map((item) => <article className="service-row" key={item.number}><span className="service-number">{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><strong>{item.price}</strong><a href={bookingUrl} aria-label={`Записаться на услугу ${item.title}`}>↗</a></article>)}
+          <div className="section-heading"><div><p className="eyebrow">Полный прайс</p><h2>Все услуги<br /><em>в одном месте</em></h2></div><p>Мы перенесли подробный актуальный прайс. Откройте нужное направление, чтобы посмотреть процедуры и стоимость.</p></div>
+          <div className="service-catalog">
+            {catalogCategories.map((category, index) => (
+              <details className="service-category" key={category.id} open={index === 0}>
+                <summary>
+                  <span className="service-number">{category.number}</span>
+                  <span className="service-category-title"><strong>{category.title}</strong><small>{category.description}</small></span>
+                  <span className="service-category-price">{category.priceFrom}</span>
+                  <span className="service-toggle" aria-hidden="true">+</span>
+                </summary>
+                <div className="service-category-body">
+                  {category.priceNote && <p className="service-category-note">{category.priceNote}</p>}
+                  <div className="service-price-grid">
+                    {category.items.map((item) => (
+                      <article className="service-price-item" key={item.id}>
+                        <div><h3>{item.name}</h3>{item.note && <p>{item.note}</p>}</div>
+                        <div className="service-price-meta">{item.duration && <small>{item.duration}</small>}<strong>{item.price}</strong></div>
+                      </article>
+                    ))}
+                  </div>
+                  <a className="service-book-link" href={bookingUrl}>Выбрать услугу и мастера <span>↗</span></a>
+                </div>
+              </details>
+            ))}
           </div>
-          <p className="price-note">Цены указаны как ориентир и могут зависеть от длины волос, сложности работы и выбранных материалов.</p>
+          <p className="price-note">Итоговая стоимость окрашивания зависит от длины и густоты волос, сложности работы и расхода красителя. Мастер подтвердит цену до начала процедуры.</p>
         </section>
 
         <section className="section works" id="works">
@@ -97,10 +108,11 @@ export default function Home() {
         <section className="section team" id="team">
           <div className="section-heading"><div><p className="eyebrow">Команда</p><h2>Мастера, которым<br /><em>доверяют красоту</em></h2></div><p>Каждый мастер работает в своём направлении и внимательно слышит пожелания клиента.</p></div>
           <div className="team-grid">
-            <article><span>Ю</span><div><h3>Юлия</h3><p>Парикмахер-стилист</p><small>Стрижки · окрашивание · образ</small></div></article>
-            <article><span>С</span><div><h3>Снежана</h3><p>Мастер по волосам</p><small>Причёски · укладки · окрашивание</small></div></article>
+            <article><span>Д</span><div><h3>Джулия</h3><p>Парикмахер-универсал</p><small>Стрижки · окрашивание · брови</small></div></article>
+            <article><span>М</span><div><h3>Марина</h3><p>Мастер депиляции</p><small>Депиляция лица и тела</small></div></article>
+            <article><span>С</span><div><h3>Снежана</h3><p>Парикмахер-универсал</p><small>Стрижки · окрашивание · биозавивка</small></div></article>
+            <article><span>Ю</span><div><h3>Юлия</h3><p>Парикмахер-универсал, колорист</p><small>Стрижки · окрашивание · депиляция</small></div></article>
             <article><span>Е</span><div><h3>Елена</h3><p>Мастер ногтевого сервиса</p><small>Маникюр · педикюр · покрытие</small></div></article>
-            <article><span>Е</span><div><h3>Елена</h3><p>Массажист</p><small>Расслабление · восстановление</small></div></article>
           </div>
         </section>
 

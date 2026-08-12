@@ -1,34 +1,17 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-type Service = {
-  id: string;
-  name: string;
-  note: string;
-  price: string;
-  duration: string;
-  masters: string[];
-};
-
-const services: Service[] = [
-  { id: "color", name: "Окрашивание", note: "Тон в тон, сложные техники и уход", price: "от 2 000 ₽", duration: "от 2 часов", masters: ["Юлия", "Снежана"] },
-  { id: "women", name: "Женская стрижка", note: "Форма, укладка и рекомендации по уходу", price: "от 900 ₽", duration: "60–90 минут", masters: ["Юлия", "Снежана"] },
-  { id: "men", name: "Мужская стрижка", note: "Классика, современные формы и борода", price: "от 700 ₽", duration: "45–60 минут", masters: ["Юлия", "Снежана"] },
-  { id: "manicure", name: "Маникюр", note: "Обработка, покрытие и дизайн", price: "от 1 000 ₽", duration: "от 90 минут", masters: ["Елена"] },
-  { id: "pedicure", name: "Педикюр", note: "Комфортный уход и стойкое покрытие", price: "от 1 600 ₽", duration: "от 90 минут", masters: ["Елена"] },
-  { id: "brows", name: "Брови и ресницы", note: "Архитектура, окрашивание, ламинирование", price: "от 600 ₽", duration: "от 45 минут", masters: ["Любой свободный мастер"] },
-  { id: "depilation", name: "Депиляция", note: "Деликатный профессиональный уход", price: "от 600 ₽", duration: "от 30 минут", masters: ["Любой свободный мастер"] },
-  { id: "massage", name: "Массаж", note: "Расслабление и восстановление", price: "по записи", duration: "от 60 минут", masters: ["Елена"] },
-];
+import { catalogCategories, getMasters } from "../services-data";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
 
 export default function BookingPage() {
-  const [serviceId, setServiceId] = useState(services[0].id);
-  const [master, setMaster] = useState(services[0].masters[0]);
+  const firstCategory = catalogCategories[0];
+  const [categoryId, setCategoryId] = useState(firstCategory.id);
+  const [itemId, setItemId] = useState(firstCategory.items[0].id);
+  const [masterId, setMasterId] = useState(firstCategory.masterIds[0]);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
@@ -36,21 +19,24 @@ export default function BookingPage() {
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const selectedService = useMemo(
-    () => services.find((service) => service.id === serviceId) ?? services[0],
-    [serviceId],
-  );
+  const selectedCategory = catalogCategories.find((category) => category.id === categoryId) ?? firstCategory;
+  const selectedService = selectedCategory.items.find((item) => item.id === itemId) ?? selectedCategory.items[0];
+  const availableMasters = getMasters(selectedCategory.masterIds);
+  const selectedMaster = availableMasters.find((master) => master.id === masterId) ?? availableMasters[0];
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
-  const ready = Boolean(serviceId && master && date && time && name.trim() && phone.trim());
+  const ready = Boolean(categoryId && itemId && selectedMaster && date && time && name.trim() && phone.trim());
 
-  function selectService(service: Service) {
-    setServiceId(service.id);
-    setMaster(service.masters[0]);
+  function selectCategory(categoryIdToSelect: string) {
+    const category = catalogCategories.find((item) => item.id === categoryIdToSelect) ?? firstCategory;
+    setCategoryId(category.id);
+    setItemId(category.items[0].id);
+    setMasterId(category.masterIds[0]);
+    setSubmitted(false);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!ready) return;
+    if (!ready || !selectedMaster) return;
 
     const formattedDate = new Intl.DateTimeFormat("ru-RU", {
       day: "numeric",
@@ -59,8 +45,10 @@ export default function BookingPage() {
     }).format(new Date(`${date}T12:00:00`));
     const message = [
       "Здравствуйте! Хочу записаться в салон «Ассоль».",
+      `Направление: ${selectedCategory.title}`,
       `Услуга: ${selectedService.name}`,
-      `Мастер: ${master}`,
+      `Стоимость по прайсу: ${selectedService.price}`,
+      `Мастер: ${selectedMaster.name}`,
       `Желаемые дата и время: ${formattedDate}, ${time}`,
       `Имя: ${name.trim()}`,
       `Телефон: ${phone.trim()}`,
@@ -86,44 +74,70 @@ export default function BookingPage() {
           <p className="eyebrow">Запись в салон</p>
           <h1>Выберите время<br /><em>для себя</em></h1>
         </div>
-        <p>Оставьте пожелания — администратор проверит расписание и подтвердит запись в WhatsApp или по телефону.</p>
+        <p>Выберите точную услугу и мастера. Администратор проверит расписание и подтвердит запись в WhatsApp или по телефону.</p>
       </section>
 
       <form className="booking-layout" onSubmit={submit}>
         <div className="booking-form">
           <fieldset className="booking-step">
-            <legend><span>01</span><strong>Услуга</strong><small>Что будем делать?</small></legend>
-            <div className="booking-services">
-              {services.map((service) => (
+            <legend><span>01</span><strong>Направление</strong><small>С чего начнём?</small></legend>
+            <div className="booking-categories">
+              {catalogCategories.map((category) => (
                 <button
-                  className={service.id === serviceId ? "service-choice active" : "service-choice"}
+                  className={category.id === categoryId ? "category-choice active" : "category-choice"}
                   type="button"
-                  key={service.id}
-                  onClick={() => selectService(service)}
-                  aria-pressed={service.id === serviceId}
+                  key={category.id}
+                  onClick={() => selectCategory(category.id)}
+                  aria-pressed={category.id === categoryId}
                 >
-                  <span>{service.name}</span>
-                  <small>{service.note}</small>
-                  <strong>{service.price}</strong>
+                  <span>{category.number}</span><strong>{category.shortTitle}</strong><small>{category.priceFrom}</small>
                 </button>
               ))}
             </div>
           </fieldset>
 
           <fieldset className="booking-step">
-            <legend><span>02</span><strong>Мастер</strong><small>Можно довериться любому свободному</small></legend>
-            <div className="choice-row">
-              {selectedService.masters.map((item) => (
-                <button className={master === item ? "pill-choice active" : "pill-choice"} type="button" key={item} onClick={() => setMaster(item)} aria-pressed={master === item}>{item}</button>
+            <legend><span>02</span><strong>Услуга</strong><small>{selectedCategory.title}</small></legend>
+            {selectedCategory.priceNote && <p className="booking-price-note">{selectedCategory.priceNote}</p>}
+            <div className="booking-services detailed">
+              {selectedCategory.items.map((service) => (
+                <button
+                  className={service.id === itemId ? "service-choice active" : "service-choice"}
+                  type="button"
+                  key={service.id}
+                  onClick={() => { setItemId(service.id); setSubmitted(false); }}
+                  aria-pressed={service.id === itemId}
+                >
+                  <span>{service.name}</span>
+                  {service.note && <small>{service.note}</small>}
+                  <strong>{service.price}</strong>
+                  {service.duration && <em>{service.duration}</em>}
+                </button>
               ))}
-              {!selectedService.masters.includes("Любой свободный мастер") && (
-                <button className={master === "Любой свободный мастер" ? "pill-choice active" : "pill-choice"} type="button" onClick={() => setMaster("Любой свободный мастер")} aria-pressed={master === "Любой свободный мастер"}>Любой свободный</button>
-              )}
+            </div>
+          </fieldset>
+
+          <fieldset className="booking-step master-step">
+            <legend><span>03</span><strong>Мастер</strong><small>Специалисты по выбранной услуге</small></legend>
+            <div className="master-choices">
+              {availableMasters.map((master) => (
+                <button
+                  className={master.id === selectedMaster?.id ? "master-choice active" : "master-choice"}
+                  type="button"
+                  key={master.id}
+                  onClick={() => { setMasterId(master.id); setSubmitted(false); }}
+                  aria-pressed={master.id === selectedMaster?.id}
+                >
+                  <span className="master-initial">{master.initial}</span>
+                  <span><strong>{master.name}</strong><small>{master.role}</small></span>
+                  <i aria-hidden="true">✓</i>
+                </button>
+              ))}
             </div>
           </fieldset>
 
           <fieldset className="booking-step">
-            <legend><span>03</span><strong>Дата и время</strong><small>Укажите удобное окно</small></legend>
+            <legend><span>04</span><strong>Дата и время</strong><small>Укажите удобное окно</small></legend>
             <label className="date-field"><span>Желаемая дата</span><input type="date" value={date} min={today} onChange={(event) => setDate(event.target.value)} required /></label>
             <div className="time-grid" aria-label="Желаемое время">
               {times.map((item) => <button className={time === item ? "time-choice active" : "time-choice"} type="button" key={item} onClick={() => setTime(item)} aria-pressed={time === item}>{item}</button>)}
@@ -132,7 +146,7 @@ export default function BookingPage() {
           </fieldset>
 
           <fieldset className="booking-step">
-            <legend><span>04</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend>
+            <legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend>
             <div className="contact-fields">
               <label><span>Имя</span><input type="text" value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться" autoComplete="name" required /></label>
               <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 999 000-00-00" autoComplete="tel" required /></label>
@@ -146,12 +160,13 @@ export default function BookingPage() {
           <div className="summary-content">
             <p className="eyebrow">Ваша запись</p>
             <h2>{selectedService.name}</h2>
+            <p className="summary-category">{selectedCategory.title}</p>
             <dl>
-              <div><dt>Мастер</dt><dd>{master}</dd></div>
+              <div><dt>Мастер</dt><dd>{selectedMaster?.name}</dd></div>
               <div><dt>Дата</dt><dd>{date ? new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(new Date(`${date}T12:00:00`)) : "Не выбрана"}</dd></div>
               <div><dt>Время</dt><dd>{time || "Не выбрано"}</dd></div>
               <div><dt>Стоимость</dt><dd>{selectedService.price}</dd></div>
-              <div><dt>Длительность</dt><dd>{selectedService.duration}</dd></div>
+              <div><dt>Длительность</dt><dd>{selectedService.duration || "уточним"}</dd></div>
             </dl>
             <button className="booking-submit" type="submit" disabled={!ready}>Отправить заявку <span>→</span></button>
             <p className="summary-note">Нажимая кнопку, вы переходите в WhatsApp с готовой заявкой. Отправьте сообщение, и мы подтвердим запись.</p>
