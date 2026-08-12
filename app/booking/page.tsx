@@ -56,7 +56,7 @@ export default function BookingPage() {
     ].filter(Boolean).join("\n");
 
     setSubmitted(true);
-    window.open(`https://wa.me/79035150818?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    window.open(`https://vk.me/assol_krasota?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -74,7 +74,7 @@ export default function BookingPage() {
           <p className="eyebrow">Запись в салон</p>
           <h1>Выберите время<br /><em>для себя</em></h1>
         </div>
-        <p>Выберите точную услугу и мастера. Администратор проверит расписание и подтвердит запись в WhatsApp или по телефону.</p>
+        <p>Выберите точную услугу и мастера. Администратор проверит расписание и подтвердит запись во ВКонтакте или по телефону.</p>
       </section>
 
       <form className="booking-layout" onSubmit={submit}>
@@ -169,8 +169,8 @@ export default function BookingPage() {
               <div><dt>Длительность</dt><dd>{selectedService.duration || "уточним"}</dd></div>
             </dl>
             <button className="booking-submit" type="submit" disabled={!ready}>Отправить заявку <span>→</span></button>
-            <p className="summary-note">Нажимая кнопку, вы переходите в WhatsApp с готовой заявкой. Отправьте сообщение, и мы подтвердим запись.</p>
-            {submitted && <p className="booking-success" role="status">Заявка подготовлена — осталось отправить сообщение в WhatsApp.</p>}
+            <p className="summary-note">Нажимая кнопку, вы переходите в сообщения «Ассоль» во ВКонтакте с готовой заявкой. Отправьте её, и мы подтвердим запись.</p>
+            {submitted && <p className="booking-success" role="status">Заявка подготовлена — осталось отправить сообщение во ВКонтакте.</p>}
           </div>
         </aside>
       </form>
