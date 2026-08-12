@@ -54,7 +54,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .service-category summary::-webkit-details-marker { display:none; }
 .service-number { font:italic 19px Georgia,serif; color:var(--wine); }
 .service-category-title { display:grid; grid-template-columns:minmax(190px,.75fr) 1.25fr; gap:30px; align-items:center; }
-.service-category-title strong { font:28px Georgia,serif; font-weight:400; }
+.service-category-title strong { min-width:0; overflow-wrap:anywhere; font:28px Georgia,serif; font-weight:400; }
 .service-category-title small { color:#6c655f; font-size:14px; line-height:1.55; }
 .service-category-price { font-size:14px; white-space:nowrap; }
 .service-toggle { width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--line); border-radius:50%; font-size:22px; font-weight:300; transition:transform .25s,background .25s,color .25s; }
@@ -65,7 +65,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .service-price-item { min-height:105px; padding:21px 22px 21px 0; display:flex; justify-content:space-between; gap:25px; border-bottom:1px solid var(--line); }
 .service-price-item:nth-child(odd) { padding-right:30px; border-right:1px solid var(--line); }
 .service-price-item:nth-child(even) { padding-left:30px; }
-.service-price-item h3 { margin:0; font:20px/1.25 Georgia,serif; font-weight:400; }
+.service-price-item h3 { margin:0; overflow-wrap:anywhere; font:20px/1.25 Georgia,serif; font-weight:400; }
 .service-price-item p { margin:8px 0 0; color:#746d67; font-size:11px; line-height:1.45; }
 .service-price-meta { flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; justify-content:space-between; text-align:right; }
 .service-price-meta small { color:#827a74; font-size:10px; }
@@ -224,7 +224,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .booking-categories { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
 .category-choice { min-height:112px; padding:16px; display:grid; grid-template-columns:1fr auto; grid-template-rows:1fr auto; gap:9px; text-align:left; color:var(--ink); background:transparent; border:1px solid var(--line); cursor:pointer; transition:background .2s,color .2s,border-color .2s,transform .2s; }
 .category-choice>span { color:var(--wine); font:italic 14px Georgia,serif; }
-.category-choice>strong { grid-column:1/-1; align-self:end; font:19px/1.15 Georgia,serif; font-weight:400; }
+.category-choice>strong { min-width:0; grid-column:1/-1; align-self:end; overflow-wrap:anywhere; font:19px/1.15 Georgia,serif; font-weight:400; }
 .category-choice>small { grid-column:2; grid-row:1; font-size:10px; white-space:nowrap; }
 .category-choice:hover { transform:translateY(-2px); border-color:var(--wine); }
 .category-choice.active { color:white; background:var(--wine); border-color:var(--wine); }
@@ -232,7 +232,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .booking-price-note { margin:-5px 0 20px; padding:13px 16px; color:#6c655f; background:var(--cream); font-size:11px; line-height:1.5; }
 .booking-services { display:grid; grid-template-columns:1fr; gap:8px; }
 .service-choice { min-height:106px; padding:19px 20px; display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto 1fr auto; gap:7px 18px; text-align:left; color:var(--ink); background:transparent; border:1px solid var(--line); cursor:pointer; transition:background .2s,color .2s,border-color .2s,transform .2s; }
-.service-choice>span { font:22px/1.2 Georgia,serif; }
+.service-choice>span { min-width:0; overflow-wrap:anywhere; font:22px/1.2 Georgia,serif; }
 .service-choice>small { grid-column:1; align-self:end; color:#746d67; font-size:11px; line-height:1.4; }
 .service-choice>strong { grid-column:2; grid-row:1; align-self:start; text-align:right; font-size:13px; font-weight:500; white-space:nowrap; }
 .service-choice>em { grid-column:2; grid-row:3; align-self:end; color:#817a74; font-size:10px; font-style:normal; white-space:nowrap; }
@@ -243,7 +243,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .master-choice { min-height:92px; padding:13px; display:grid; grid-template-columns:54px 1fr 24px; gap:13px; align-items:center; text-align:left; color:var(--ink); background:transparent; border:1px solid var(--line); cursor:pointer; transition:border-color .2s,background .2s,transform .2s; }
 .master-choice:hover { transform:translateY(-2px); border-color:var(--wine); }
 .master-initial { width:54px; height:62px; display:grid; place-items:center; color:var(--wine); background:var(--cream); border-radius:50% 50% 7px 7px; font:italic 25px Georgia,serif; }
-.master-choice>span:nth-child(2) { display:grid; gap:5px; }
+.master-choice>span:nth-child(2) { min-width:0; display:grid; gap:5px; }
 .master-choice>span:nth-child(2)>strong { font:21px Georgia,serif; font-weight:400; }
 .master-choice>span:nth-child(2)>small { color:#746d67; font-size:10px; line-height:1.35; }
 .master-choice>i { width:22px; height:22px; display:grid; place-items:center; color:transparent; border:1px solid var(--line); border-radius:50%; font-size:11px; font-style:normal; }
