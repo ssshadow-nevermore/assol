@@ -2,10 +2,21 @@
 
 import { FormEvent, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { catalogCategories, getMasters } from "../services-data";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
+
+const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
+  color: { src: "/images/gallery-9.webp", alt: "Окрашивание волос в салоне Ассоль", position: "center 34%" },
+  women: { src: "/images/gallery-10.webp", alt: "Женская стрижка и укладка в салоне Ассоль", position: "center 30%" },
+  men: { src: "/images/gallery-5.webp", alt: "Мужская стрижка в салоне Ассоль", position: "center 40%" },
+  children: { src: "/images/gallery-10.webp", alt: "Стрижка волос в салоне Ассоль", position: "70% 30%" },
+  texture: { src: "/images/gallery-9.webp", alt: "Завивка и объём волос в салоне Ассоль", position: "70% 34%" },
+  manicure: { src: "/images/gallery-4.webp", alt: "Зона мастеров салона Ассоль", position: "center 44%" },
+  pedicure: { src: "/images/photo-2.webp", alt: "Салон красоты Ассоль в Пушкино", position: "center 52%" },
+  depilation: { src: "/images/gallery-4.webp", alt: "Интерьер салона красоты Ассоль", position: "68% 46%" },
+  brows: { src: "/images/gallery-10.webp", alt: "Создание образа в салоне Ассоль", position: "70% 18%" },
+};
 
 export default function BookingPage() {
   const firstCategory = catalogCategories[0];
@@ -21,6 +32,7 @@ export default function BookingPage() {
 
   const selectedCategory = catalogCategories.find((category) => category.id === categoryId) ?? firstCategory;
   const selectedService = selectedCategory.items.find((item) => item.id === itemId) ?? selectedCategory.items[0];
+  const summaryImage = summaryImages[selectedCategory.id] ?? summaryImages.color;
   const availableMasters = getMasters(selectedCategory.masterIds);
   const selectedMaster = availableMasters.find((master) => master.id === masterId) ?? availableMasters[0];
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
@@ -62,10 +74,13 @@ export default function BookingPage() {
   return (
     <main className="booking-page">
       <header className="booking-header">
-        <Link className="brand" href="/" aria-label="Ассоль — на главную">
+        {/* A native link intentionally forces a full page load in the hosted build. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a className="brand" href="/#top" aria-label="Ассоль — на главную">
           <span>Ассоль</span><small>салон красоты</small>
-        </Link>
-        <Link className="booking-back" href="/">← Вернуться на сайт</Link>
+        </a>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a className="booking-back" href="/#top">← Вернуться на сайт</a>
         <a className="header-phone" href="tel:+79035150818">+7 903 515-08-18</a>
       </header>
 
@@ -156,7 +171,16 @@ export default function BookingPage() {
         </div>
 
         <aside className="booking-summary">
-          <div className="summary-image"><Image src="/images/gallery-9.webp" alt="Работа мастера салона Ассоль" fill sizes="(max-width: 900px) 100vw, 34vw" /></div>
+          <div className="summary-image">
+            <Image
+              key={selectedCategory.id}
+              src={summaryImage.src}
+              alt={summaryImage.alt}
+              fill
+              sizes="(max-width: 900px) 100vw, 34vw"
+              style={{ objectPosition: summaryImage.position }}
+            />
+          </div>
           <div className="summary-content">
             <p className="eyebrow">Ваша запись</p>
             <h2>{selectedService.name}</h2>
