@@ -1,7 +1,6 @@
 import Image from "next/image";
 
-const bookingUrl =
-  "https://yandex.ru/web-maps/webview?mode=booking&booking[permalink]=1089857323&booking[standalone]=true&source=partner-cta";
+const bookingUrl = "/booking";
 
 const services = [
   { number: "01", title: "Окрашивание", text: "Тон в тон, сложные техники и бережный уход", price: "от 2 000 ₽" },
