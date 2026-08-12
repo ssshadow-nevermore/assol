@@ -7,15 +7,15 @@ import { catalogCategories, getMasters } from "../services-data";
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
 
 const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
-  color: { src: "/images/gallery-9.webp", alt: "Окрашивание волос в салоне Ассоль", position: "center 34%" },
-  women: { src: "/images/gallery-10.webp", alt: "Женская стрижка и укладка в салоне Ассоль", position: "center 30%" },
-  men: { src: "/images/gallery-5.webp", alt: "Мужская стрижка в салоне Ассоль", position: "center 40%" },
-  children: { src: "/images/gallery-10.webp", alt: "Стрижка волос в салоне Ассоль", position: "70% 30%" },
-  texture: { src: "/images/gallery-9.webp", alt: "Завивка и объём волос в салоне Ассоль", position: "70% 34%" },
-  manicure: { src: "/images/gallery-4.webp", alt: "Зона мастеров салона Ассоль", position: "center 44%" },
-  pedicure: { src: "/images/photo-2.webp", alt: "Салон красоты Ассоль в Пушкино", position: "center 52%" },
-  depilation: { src: "/images/gallery-4.webp", alt: "Интерьер салона красоты Ассоль", position: "68% 46%" },
-  brows: { src: "/images/gallery-10.webp", alt: "Создание образа в салоне Ассоль", position: "70% 18%" },
+  color: { src: "/images/booking-color.jpg", alt: "Окрашивание волос до и после в салоне Ассоль", position: "center 38%" },
+  women: { src: "/images/booking-women.jpg", alt: "Женская стрижка в салоне Ассоль", position: "center 40%" },
+  men: { src: "/images/booking-men.jpg", alt: "Мужская стрижка до и после в салоне Ассоль", position: "center 38%" },
+  children: { src: "/images/booking-children.jpg", alt: "Короткая стрижка до и после в салоне Ассоль", position: "center 38%" },
+  texture: { src: "/images/booking-texture.jpg", alt: "Укладка и объём волос до и после в салоне Ассоль", position: "center 35%" },
+  manicure: { src: "/images/booking-manicure.jpg", alt: "Маникюр в салоне Ассоль", position: "center 50%" },
+  pedicure: { src: "/images/booking-pedicure.jpg", alt: "Педикюр в салоне Ассоль", position: "center 46%" },
+  depilation: { src: "/images/booking-depilation.jpg", alt: "Коррекция и депиляция зоны лица до и после в салоне Ассоль", position: "center 42%" },
+  brows: { src: "/images/booking-brows.jpg", alt: "Архитектура и окрашивание бровей до и после в салоне Ассоль", position: "center 50%" },
 };
 
 export default function BookingPage() {
