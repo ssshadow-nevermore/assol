@@ -3,7 +3,12 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import { catalogCategories, getMasters } from "../services-data";
-import { buildVkBookingMessage, buildVkMessageUrl } from "./vk-message.mjs";
+import { buildVkBookingMessage } from "./vk-message.mjs";
+
+const WEB3FORMS_ACCESS_KEY = "bced2591-0bba-4e8a-ae26-060c040ec31a";
+const SALON_EMAIL = "jokerz44677@gmail.com";
+
+type SubmitState = "idle" | "sending" | "success" | "error";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
 
@@ -29,8 +34,7 @@ export default function BookingPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [messageCopied, setMessageCopied] = useState(false);
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
 
   const selectedCategory = catalogCategories.find((category) => category.id === categoryId) ?? firstCategory;
   const selectedService = selectedCategory.items.find((item) => item.id === itemId) ?? selectedCategory.items[0];
@@ -54,29 +58,55 @@ export default function BookingPage() {
     comment,
   });
 
+  function resetSubmitState() {
+    setSubmitState("idle");
+  }
+
   function selectCategory(categoryIdToSelect: string) {
     const category = catalogCategories.find((item) => item.id === categoryIdToSelect) ?? firstCategory;
     setCategoryId(category.id);
     setItemId(category.items[0].id);
     setMasterId(category.masterIds[0]);
-    setSubmitted(false);
-    setMessageCopied(false);
+    resetSubmitState();
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!ready || !selectedMaster) return;
+    if (!ready || !selectedMaster || submitState === "sending") return;
 
-    const vkMessageUrl = buildVkMessageUrl(bookingMessage);
+    setSubmitState("sending");
 
-    setSubmitted(true);
-    setMessageCopied(false);
-    window.open(vkMessageUrl, "_blank", "noopener,noreferrer");
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `Новая заявка: ${selectedService.name}`,
+          from_name: "Сайт салона «Ассоль»",
+          recipient: SALON_EMAIL,
+          name: name.trim(),
+          phone: phone.trim(),
+          category: selectedCategory.title,
+          service: selectedService.name,
+          price: selectedService.price,
+          master: selectedMaster.name,
+          date: formattedDate,
+          time,
+          comment: comment.trim() || "Не указан",
+          message: bookingMessage,
+          botcheck: "",
+        }),
+      });
+      const result = await response.json() as { success?: boolean };
 
-    if (navigator.clipboard) {
-      void navigator.clipboard.writeText(bookingMessage)
-        .then(() => setMessageCopied(true))
-        .catch(() => setMessageCopied(false));
+      if (!response.ok || !result.success) throw new Error("Submission failed");
+      setSubmitState("success");
+    } catch {
+      setSubmitState("error");
     }
   }
 
@@ -98,7 +128,7 @@ export default function BookingPage() {
           <p className="eyebrow">Запись в салон</p>
           <h1>Выберите время<br /><em>для себя</em></h1>
         </div>
-        <p>Выберите точную услугу и мастера. Администратор проверит расписание и подтвердит запись во ВКонтакте или по телефону.</p>
+        <p>Выберите точную услугу и мастера. Заявка сразу придёт администратору, а запись подтвердят по телефону.</p>
       </section>
 
       <form className="booking-layout" onSubmit={submit}>
@@ -129,7 +159,7 @@ export default function BookingPage() {
                   className={service.id === itemId ? "service-choice active" : "service-choice"}
                   type="button"
                   key={service.id}
-                  onClick={() => { setItemId(service.id); setSubmitted(false); setMessageCopied(false); }}
+                  onClick={() => { setItemId(service.id); resetSubmitState(); }}
                   aria-pressed={service.id === itemId}
                 >
                   <span>{service.name}</span>
@@ -149,7 +179,7 @@ export default function BookingPage() {
                   className={master.id === selectedMaster?.id ? "master-choice active" : "master-choice"}
                   type="button"
                   key={master.id}
-                  onClick={() => { setMasterId(master.id); setSubmitted(false); setMessageCopied(false); }}
+                  onClick={() => { setMasterId(master.id); resetSubmitState(); }}
                   aria-pressed={master.id === selectedMaster?.id}
                 >
                   <span className="master-initial">{master.initial}</span>
@@ -162,9 +192,9 @@ export default function BookingPage() {
 
           <fieldset className="booking-step">
             <legend><span>04</span><strong>Дата и время</strong><small>Укажите удобное окно</small></legend>
-            <label className="date-field"><span>Желаемая дата</span><input type="date" value={date} min={today} onChange={(event) => setDate(event.target.value)} required /></label>
+            <label className="date-field"><span>Желаемая дата</span><input type="date" value={date} min={today} onChange={(event) => { setDate(event.target.value); resetSubmitState(); }} required /></label>
             <div className="time-grid" aria-label="Желаемое время">
-              {times.map((item) => <button className={time === item ? "time-choice active" : "time-choice"} type="button" key={item} onClick={() => setTime(item)} aria-pressed={time === item}>{item}</button>)}
+              {times.map((item) => <button className={time === item ? "time-choice active" : "time-choice"} type="button" key={item} onClick={() => { setTime(item); resetSubmitState(); }} aria-pressed={time === item}>{item}</button>)}
             </div>
             <p className="booking-hint">Выбранное время — пожелание. Администратор подтвердит его или предложит ближайшее свободное.</p>
           </fieldset>
@@ -172,9 +202,9 @@ export default function BookingPage() {
           <fieldset className="booking-step">
             <legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend>
             <div className="contact-fields">
-              <label><span>Имя</span><input type="text" value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться" autoComplete="name" required /></label>
-              <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 999 000-00-00" autoComplete="tel" required /></label>
-              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} /></label>
+              <label><span>Имя</span><input type="text" value={name} onChange={(event) => { setName(event.target.value); resetSubmitState(); }} placeholder="Как к вам обращаться" autoComplete="name" required /></label>
+              <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => { setPhone(event.target.value); resetSubmitState(); }} placeholder="+7 999 000-00-00" autoComplete="tel" required /></label>
+              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onChange={(event) => { setComment(event.target.value); resetSubmitState(); }} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} /></label>
             </div>
           </fieldset>
         </div>
@@ -202,15 +232,19 @@ export default function BookingPage() {
               <div><dt>Длительность</dt><dd>{selectedService.duration || "уточним"}</dd></div>
             </dl>
             <details className="summary-message-preview">
-              <summary>Текст заявки для VK</summary>
+              <summary>Что получит администратор</summary>
               <pre>{bookingMessage}</pre>
             </details>
-            <button className="booking-submit" type="submit" disabled={!ready}>Отправить заявку <span>→</span></button>
-            <p className="summary-note">Нажимая кнопку, вы переходите в сообщения «Ассоль» во ВКонтакте с готовой заявкой. Отправьте её, и мы подтвердим запись.</p>
-            {submitted && (
-              <p className="booking-success" role="status">
-                Заявка открыта во ВКонтакте с готовым текстом.{messageCopied ? " На всякий случай мы также скопировали её — можно вставить вручную." : " Осталось нажать «Отправить»."}
-              </p>
+            <button className="booking-submit" type="submit" disabled={!ready || submitState === "sending" || submitState === "success"}>
+              {submitState === "sending" ? "Отправляем…" : submitState === "success" ? "Заявка отправлена" : "Отправить заявку"}
+              <span>{submitState === "success" ? "✓" : "→"}</span>
+            </button>
+            <p className="summary-note">Нажимая кнопку, вы отправляете заявку администратору салона. Переходить на другой сайт не потребуется.</p>
+            {submitState === "success" && (
+              <p className="booking-success" role="status"><span aria-hidden="true">✓</span><strong>Заявка отправлена</strong> Администратор свяжется с вами по телефону для подтверждения записи.</p>
+            )}
+            {submitState === "error" && (
+              <p className="booking-error" role="alert"><strong>Не удалось отправить заявку.</strong> Проверьте подключение к интернету и попробуйте ещё раз или позвоните по номеру +7 903 515-08-18.</p>
             )}
           </div>
         </aside>
