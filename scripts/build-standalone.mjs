@@ -51,6 +51,7 @@ const imageFiles = [
   "booking-pedicure.jpg",
   "booking-depilation.jpg",
   "booking-brows.jpg",
+  "booking-color-tonic.webp",
 ];
 const images = Object.fromEntries(await Promise.all(imageFiles.map(async (fileName) => [fileName, await imageData(fileName)])));
 
@@ -185,7 +186,7 @@ const bookingPage = `
 function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
   const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
   const imageConfig = {
-    color: ["clean-color.webp", "Окрашивание волос в салоне Ассоль", "center 38%"],
+    color: ["booking-color-tonic.webp", "Тонирование волос в салоне Ассоль", "center 28%"],
     women: ["clean-women-bob.webp", "Женская стрижка в салоне Ассоль", "center 42%"],
     men: ["clean-men.webp", "Мужская стрижка в салоне Ассоль", "center 38%"],
     children: ["clean-children.webp", "Короткая стрижка в салоне Ассоль", "center 38%"],

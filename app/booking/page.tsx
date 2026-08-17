@@ -10,7 +10,7 @@ type SubmitState = "idle" | "sending" | "success" | "error";
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
 
 const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
-  color: { src: "/images/clean-color.webp", alt: "Окрашивание волос в салоне Ассоль", position: "center 38%" },
+  color: { src: "/images/booking-color-tonic.webp", alt: "Тонирование волос в салоне Ассоль", position: "center 28%" },
   women: { src: "/images/clean-women-bob.webp", alt: "Женская стрижка в салоне Ассоль", position: "center 42%" },
   men: { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", position: "center 38%" },
   children: { src: "/images/clean-children.webp", alt: "Короткая стрижка в салоне Ассоль", position: "center 38%" },
