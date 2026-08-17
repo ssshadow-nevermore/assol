@@ -39,6 +39,8 @@ const { catalogCategories, masters } = serviceModule;
 
 const imageFiles = [
   "clean-color.webp",
+  "hero-bob.webp",
+  "portfolio-color-refresh.webp",
   "clean-women-hair.webp",
   "clean-men.webp",
   "clean-women-bob.webp",
@@ -102,8 +104,8 @@ const mainPage = `
         <div class="hero-proof"><strong>4,6</strong><span class="stars">★★★★★</span><span>54 отзыва на Яндекс Картах</span></div>
       </div>
       <div class="hero-visual" aria-label="Результат работы мастера салона">
-        <img src="${images["clean-color.webp"]}" alt="Результат окрашивания волос в салоне Ассоль">
-        <div class="hero-note"><span>01</span><p>Бережно к волосам.<br>Точно к вашему образу.</p></div>
+        <img src="${images["hero-bob.webp"]}" alt="Женская стрижка боб, выполненная мастером салона Ассоль">
+        <div class="hero-note"><p>Бережно к волосам.<br>Точно к вашему образу.</p></div>
       </div>
       <p class="hero-address">Пушкино · Московский проспект, 44</p>
     </section>
@@ -116,9 +118,9 @@ const mainPage = `
     <section class="section works" id="works">
       <div class="section-heading light"><div><p class="eyebrow">Портфолио</p><h2>Результат говорит<br><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
       <div class="works-grid">
-        <figure class="work work-1"><img src="${images["clean-color.webp"]}" alt="Окрашивание и женская стрижка в салоне Ассоль"><figcaption><span>01</span>Окрашивание · Стрижка</figcaption></figure>
-        <figure class="work work-2"><img src="${images["clean-women-hair.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"><figcaption><span>02</span>Стрижка · Укладка</figcaption></figure>
-        <figure class="work work-3"><img src="${images["clean-men.webp"]}" alt="Мужская стрижка в салоне Ассоль"><figcaption><span>03</span>Мужская стрижка</figcaption></figure>
+        <figure class="work"><div class="work-media"><img src="${images["portfolio-color-refresh.webp"]}" alt="Окрашивание волос до и после в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Окрашивание · Стрижка</h3><p>Обновление цвета и формы — результат крупным планом, без ретуши.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+        <figure class="work"><div class="work-media"><img src="${images["clean-women-hair.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Стрижка · Укладка</h3><p>Мягкие слои и укладка, которая подчёркивает движение волос.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+        <figure class="work"><div class="work-media"><img src="${images["clean-men.webp"]}" alt="Мужская стрижка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Мужская стрижка</h3><p>Чистая форма, плавный переход и аккуратная окантовка.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
       </div>
       <a class="button button-light" href="https://vk.ru/assol_krasota" target="_blank" rel="noreferrer">Больше работ во ВКонтакте <span>↗</span></a>
     </section>
@@ -146,7 +148,7 @@ const mainPage = `
     </section>
     <section class="contacts" id="contacts">
       <div class="contacts-copy"><p class="eyebrow">Контакты</p><h2>Будем рады<br><em>видеть вас</em></h2><address>Московская область, Пушкино<br>Московский проспект, 44</address><a class="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p class="hours">Ежедневно · 09:00–20:00</p><div class="contact-actions"><a class="button" href="#booking" data-booking>Записаться онлайн <span>↗</span></a><a class="text-link" href="https://yandex.ru/maps/org/1089857323" target="_blank" rel="noreferrer">Построить маршрут</a></div></div>
-      <div class="contacts-image"><img src="${images["salon-interior-clean.webp"]}" alt="Рабочий зал салона красоты Ассоль"><span>Ждём вас ежедневно · 09:00–20:00</span></div>
+      <div class="contacts-map" aria-label="Карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?mode=search&amp;oid=1089857323&amp;ol=biz&amp;z=16" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>
     </section>
   </main>
   <footer class="footer"><a class="brand brand-footer" href="#top"><span>Ассоль</span><small>салон красоты</small></a><div><a href="https://wa.me/79035150818">WhatsApp</a><a href="https://telegram.me/+79035150818">Telegram</a><a href="https://vk.ru/assol_krasota">ВКонтакте</a></div><p>© <span id="offline-year"></span> Ассоль</p></footer>

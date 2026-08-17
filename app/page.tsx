@@ -4,9 +4,9 @@ import { catalogCategories } from "./services-data";
 const bookingUrl = "/booking";
 
 const works = [
-  { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка" },
-  { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка" },
-  { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка" },
+  { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка", description: "Обновление цвета и формы — результат крупным планом, без ретуши." },
+  { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка", description: "Мягкие слои и укладка, которая подчёркивает движение волос." },
+  { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка", description: "Чистая форма, плавный переход и аккуратная окантовка." },
 ];
 
 const reviews = [
@@ -60,8 +60,8 @@ export default function Home() {
             <div className="hero-proof"><strong>4,6</strong><span className="stars">★★★★★</span><span>54 отзыва на Яндекс Картах</span></div>
           </div>
           <div className="hero-visual" aria-label="Результат работы мастера салона">
-            <Image src="/images/clean-color.webp" alt="Результат окрашивания волос в салоне Ассоль" fill priority sizes="(max-width: 720px) 88vw, 34vw" />
-            <div className="hero-note"><span>01</span><p>Бережно к волосам.<br />Точно к вашему образу.</p></div>
+            <Image src="/images/hero-bob.webp" alt="Женская стрижка боб, выполненная мастером салона Ассоль" width={1200} height={1200} priority sizes="(max-width: 720px) calc(100vw - 36px), 48vw" />
+            <div className="hero-note"><p>Бережно к волосам.<br />Точно к вашему образу.</p></div>
           </div>
           <p className="hero-address">Пушкино · Московский проспект, 44</p>
         </section>
@@ -100,7 +100,12 @@ export default function Home() {
         <section className="section works" id="works">
           <div className="section-heading light"><div><p className="eyebrow">Портфолио</p><h2>Результат говорит<br /><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
           <div className="works-grid">
-            {works.map((work, index) => <figure className={`work work-${index + 1}`} key={work.src}><Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) 82vw, 31vw" /><figcaption><span>0{index + 1}</span>{work.label}</figcaption></figure>)}
+            {works.map((work) => (
+              <figure className="work" key={work.src}>
+                <div className="work-media"><Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 52vw" /></div>
+                <figcaption><span className="work-kicker">Реальная работа</span><h3>{work.label}</h3><p>{work.description}</p><a className="work-link" href={bookingUrl}>Записаться на похожий образ <span>↗</span></a></figcaption>
+              </figure>
+            ))}
           </div>
           <a className="button button-light" href="https://vk.ru/assol_krasota">Больше работ во ВКонтакте <span>↗</span></a>
         </section>
@@ -130,7 +135,7 @@ export default function Home() {
 
         <section className="contacts" id="contacts">
           <div className="contacts-copy"><p className="eyebrow">Контакты</p><h2>Будем рады<br /><em>видеть вас</em></h2><address>Московская область, Пушкино<br />Московский проспект, 44</address><a className="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p className="hours">Ежедневно · 09:00–20:00</p><div className="contact-actions"><a className="button" href={bookingUrl}>Записаться онлайн <span>↗</span></a><a className="text-link" href="https://yandex.ru/maps/org/1089857323">Построить маршрут</a></div></div>
-          <div className="contacts-image"><Image src="/images/salon-interior-clean.webp" alt="Рабочий зал салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) 100vw, 46vw" /><span>Ждём вас ежедневно · 09:00–20:00</span></div>
+          <div className="contacts-map" aria-label="Карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?mode=search&oid=1089857323&ol=biz&z=16" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" /></div>
         </section>
       </main>
 
