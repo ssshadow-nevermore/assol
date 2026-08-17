@@ -198,7 +198,7 @@ export default function BookingPage() {
 
           <fieldset className="booking-step">
             <legend><span>04</span><strong>Дата и время</strong><small>Укажите удобное окно</small></legend>
-            <label className="date-field"><span>Желаемая дата</span><input type="date" value={date} min={today} onChange={(event) => { setDate(event.target.value); resetSubmitState(); }} required /></label>
+            <label className="date-field"><span>Желаемая дата</span><input type="date" value={date} min={today} onInput={(event) => { setDate(event.currentTarget.value); resetSubmitState(); }} required /></label>
             <div className="time-grid" aria-label="Желаемое время">
               {times.map((item) => <button className={time === item ? "time-choice active" : "time-choice"} type="button" key={item} onClick={() => { setTime(item); resetSubmitState(); }} aria-pressed={time === item}>{item}</button>)}
             </div>
@@ -208,9 +208,9 @@ export default function BookingPage() {
           <fieldset className="booking-step">
             <legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend>
             <div className="contact-fields">
-              <label><span>Имя</span><input type="text" value={name} onChange={(event) => { setName(event.target.value); resetSubmitState(); }} placeholder="Как к вам обращаться" autoComplete="name" minLength={2} maxLength={60} required /></label>
-              <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => { setPhone(event.target.value); resetSubmitState(); }} placeholder="+7 999 000-00-00" autoComplete="tel" inputMode="tel" minLength={10} maxLength={24} pattern="[+0-9()\s-]{10,24}" title="Введите номер телефона: от 10 до 15 цифр" required /></label>
-              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onChange={(event) => { setComment(event.target.value); resetSubmitState(); }} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} maxLength={500} /></label>
+              <label><span>Имя</span><input type="text" value={name} onInput={(event) => { setName(event.currentTarget.value); resetSubmitState(); }} placeholder="Как к вам обращаться" autoComplete="name" minLength={2} maxLength={60} required /></label>
+              <label><span>Телефон</span><input type="tel" value={phone} onInput={(event) => { setPhone(event.currentTarget.value); resetSubmitState(); }} placeholder="+7 999 000-00-00" autoComplete="tel" inputMode="tel" minLength={10} maxLength={24} pattern="[+0-9()\s-]{10,24}" title="Введите номер телефона: от 10 до 15 цифр" required /></label>
+              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onInput={(event) => { setComment(event.currentTarget.value); resetSubmitState(); }} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} maxLength={500} /></label>
             </div>
           </fieldset>
         </div>
