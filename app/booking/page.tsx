@@ -5,6 +5,7 @@ import Image from "next/image";
 import { catalogCategories, getMasters } from "../services-data";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
+const vkCommunityId = "232132454";
 
 const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
   color: { src: "/images/booking-color.jpg", alt: "Окрашивание волос до и после в салоне Ассоль", position: "center 38%" },
@@ -29,6 +30,7 @@ export default function BookingPage() {
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [messageCopied, setMessageCopied] = useState(false);
 
   const selectedCategory = catalogCategories.find((category) => category.id === categoryId) ?? firstCategory;
   const selectedService = selectedCategory.items.find((item) => item.id === itemId) ?? selectedCategory.items[0];
@@ -44,6 +46,7 @@ export default function BookingPage() {
     setItemId(category.items[0].id);
     setMasterId(category.masterIds[0]);
     setSubmitted(false);
+    setMessageCopied(false);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -67,8 +70,17 @@ export default function BookingPage() {
       comment.trim() ? `Комментарий: ${comment.trim()}` : "",
     ].filter(Boolean).join("\n");
 
+    const vkMessageUrl = `https://vk.ru/write-${vkCommunityId}?text=${encodeURIComponent(message)}`;
+
     setSubmitted(true);
-    window.open(`https://vk.me/assol_krasota?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    setMessageCopied(false);
+    window.open(vkMessageUrl, "_blank", "noopener,noreferrer");
+
+    if (navigator.clipboard) {
+      void navigator.clipboard.writeText(message)
+        .then(() => setMessageCopied(true))
+        .catch(() => setMessageCopied(false));
+    }
   }
 
   return (
@@ -120,7 +132,7 @@ export default function BookingPage() {
                   className={service.id === itemId ? "service-choice active" : "service-choice"}
                   type="button"
                   key={service.id}
-                  onClick={() => { setItemId(service.id); setSubmitted(false); }}
+                  onClick={() => { setItemId(service.id); setSubmitted(false); setMessageCopied(false); }}
                   aria-pressed={service.id === itemId}
                 >
                   <span>{service.name}</span>
@@ -140,7 +152,7 @@ export default function BookingPage() {
                   className={master.id === selectedMaster?.id ? "master-choice active" : "master-choice"}
                   type="button"
                   key={master.id}
-                  onClick={() => { setMasterId(master.id); setSubmitted(false); }}
+                  onClick={() => { setMasterId(master.id); setSubmitted(false); setMessageCopied(false); }}
                   aria-pressed={master.id === selectedMaster?.id}
                 >
                   <span className="master-initial">{master.initial}</span>
@@ -194,7 +206,11 @@ export default function BookingPage() {
             </dl>
             <button className="booking-submit" type="submit" disabled={!ready}>Отправить заявку <span>→</span></button>
             <p className="summary-note">Нажимая кнопку, вы переходите в сообщения «Ассоль» во ВКонтакте с готовой заявкой. Отправьте её, и мы подтвердим запись.</p>
-            {submitted && <p className="booking-success" role="status">Заявка подготовлена — осталось отправить сообщение во ВКонтакте.</p>}
+            {submitted && (
+              <p className="booking-success" role="status">
+                Заявка открыта во ВКонтакте с готовым текстом.{messageCopied ? " На всякий случай мы также скопировали её — можно вставить вручную." : " Осталось нажать «Отправить»."}
+              </p>
+            )}
           </div>
         </aside>
       </form>
