@@ -5,9 +5,6 @@ import Image from "next/image";
 import { catalogCategories, getMasters } from "../services-data";
 import { buildBookingMessage } from "./booking-message.mjs";
 
-const WEB3FORMS_ACCESS_KEY = "bced2591-0bba-4e8a-ae26-060c040ec31a";
-const SALON_EMAIL = "jokerz44677@gmail.com";
-
 type SubmitState = "idle" | "sending" | "success" | "error";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
@@ -80,7 +77,7 @@ export default function BookingPage() {
     const timeoutId = window.setTimeout(() => controller.abort(), 15000);
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/booking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,21 +85,14 @@ export default function BookingPage() {
         },
         signal: controller.signal,
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `Новая заявка: ${selectedService.name}`,
-          from_name: "Сайт салона «Ассоль»",
-          recipient: SALON_EMAIL,
+          categoryId: selectedCategory.id,
+          serviceId: selectedService.id,
+          masterId: selectedMaster.id,
           name: name.trim(),
           phone: phone.trim(),
-          category: selectedCategory.title,
-          service: selectedService.name,
-          price: selectedService.price,
-          master: selectedMaster.name,
-          date: formattedDate,
+          date,
           time,
           comment: comment.trim() || "Не указан",
-          message: bookingMessage,
-          botcheck: "",
         }),
       });
       const result = await response.json() as { success?: boolean };

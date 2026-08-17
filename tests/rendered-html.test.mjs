@@ -54,12 +54,39 @@ test("all image references exist and legacy text-overlay assets are removed", as
   for (const asset of legacyAssets) assert.equal(imageFiles.includes(asset), false, `${asset} must not be published`);
 });
 
-test("booking submission has validation, timeout, recipient and success/error states", async () => {
-  const booking = await readFile(new URL("../app/booking/page.tsx", import.meta.url), "utf8");
-  assert.match(booking, /https:\/\/api\.web3forms\.com\/submit/);
-  assert.match(booking, /jokerz44677@gmail\.com/);
+test("booking submission has client and server validation, timeout, recipient and states", async () => {
+  const [booking, endpoint] = await Promise.all([
+    readFile(new URL("../app/booking/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/booking/route.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(booking, /fetch\("\/api\/booking"/);
+  assert.doesNotMatch(booking, /WEB3FORMS_ACCESS_KEY|api\.web3forms\.com/);
   assert.match(booking, /AbortController/);
   assert.match(booking, /phoneDigits\.length >= 10/);
   assert.match(booking, /submitState === "success"/);
   assert.match(booking, /submitState === "error"/);
+  assert.match(endpoint, /process\.env\.WEB3FORMS_ACCESS_KEY/);
+  assert.match(endpoint, /https:\/\/api\.web3forms\.com\/submit/);
+  assert.match(endpoint, /jokerz44677@gmail\.com/);
+  assert.match(endpoint, /contentLength > 12_000/);
+  assert.match(endpoint, /phoneDigits\.length < 10/);
+  assert.match(endpoint, /ALLOWED_TIMES\.has\(time\)/);
+});
+
+test("booking endpoint rejects an invalid request before email delivery", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-invalid-booking`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/api/booking", {
+      method: "POST",
+      headers: { "content-type": "application/json", "sec-fetch-site": "same-origin" },
+      body: JSON.stringify({ categoryId: "unknown", name: "A", phone: "123" }),
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) }, WEB3FORMS_ACCESS_KEY: "test-key" },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { success: false, message: "Проверьте заполненные данные." });
 });
