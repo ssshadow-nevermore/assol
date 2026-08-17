@@ -3,9 +3,9 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import { catalogCategories, getMasters } from "../services-data";
+import { buildVkBookingMessage, buildVkMessageUrl } from "./vk-message.mjs";
 
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
-const vkCommunityId = "232132454";
 
 const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
   color: { src: "/images/booking-color.jpg", alt: "Окрашивание волос до и после в салоне Ассоль", position: "center 38%" },
@@ -39,6 +39,20 @@ export default function BookingPage() {
   const selectedMaster = availableMasters.find((master) => master.id === masterId) ?? availableMasters[0];
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
   const ready = Boolean(categoryId && itemId && selectedMaster && date && time && name.trim() && phone.trim());
+  const formattedDate = date
+    ? new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00`))
+    : "не выбрана";
+  const bookingMessage = buildVkBookingMessage({
+    category: selectedCategory.title,
+    service: selectedService.name,
+    price: selectedService.price,
+    master: selectedMaster?.name ?? "не выбран",
+    date: formattedDate,
+    time: time || "не выбрано",
+    name: name.trim() || "не указано",
+    phone: phone.trim() || "не указан",
+    comment,
+  });
 
   function selectCategory(categoryIdToSelect: string) {
     const category = catalogCategories.find((item) => item.id === categoryIdToSelect) ?? firstCategory;
@@ -53,31 +67,14 @@ export default function BookingPage() {
     event.preventDefault();
     if (!ready || !selectedMaster) return;
 
-    const formattedDate = new Intl.DateTimeFormat("ru-RU", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(new Date(`${date}T12:00:00`));
-    const message = [
-      "Здравствуйте! Хочу записаться в салон «Ассоль».",
-      `Направление: ${selectedCategory.title}`,
-      `Услуга: ${selectedService.name}`,
-      `Стоимость по прайсу: ${selectedService.price}`,
-      `Мастер: ${selectedMaster.name}`,
-      `Желаемые дата и время: ${formattedDate}, ${time}`,
-      `Имя: ${name.trim()}`,
-      `Телефон: ${phone.trim()}`,
-      comment.trim() ? `Комментарий: ${comment.trim()}` : "",
-    ].filter(Boolean).join("\n");
-
-    const vkMessageUrl = `https://vk.ru/write-${vkCommunityId}?text=${encodeURIComponent(message)}`;
+    const vkMessageUrl = buildVkMessageUrl(bookingMessage);
 
     setSubmitted(true);
     setMessageCopied(false);
     window.open(vkMessageUrl, "_blank", "noopener,noreferrer");
 
     if (navigator.clipboard) {
-      void navigator.clipboard.writeText(message)
+      void navigator.clipboard.writeText(bookingMessage)
         .then(() => setMessageCopied(true))
         .catch(() => setMessageCopied(false));
     }
@@ -204,6 +201,10 @@ export default function BookingPage() {
               <div><dt>Стоимость</dt><dd>{selectedService.price}</dd></div>
               <div><dt>Длительность</dt><dd>{selectedService.duration || "уточним"}</dd></div>
             </dl>
+            <details className="summary-message-preview">
+              <summary>Текст заявки для VK</summary>
+              <pre>{bookingMessage}</pre>
+            </details>
             <button className="booking-submit" type="submit" disabled={!ready}>Отправить заявку <span>→</span></button>
             <p className="summary-note">Нажимая кнопку, вы переходите в сообщения «Ассоль» во ВКонтакте с готовой заявкой. Отправьте её, и мы подтвердим запись.</p>
             {submitted && (

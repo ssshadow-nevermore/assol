@@ -276,6 +276,9 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .summary-content dl div { padding:13px 0; display:flex; justify-content:space-between; gap:20px; border-bottom:1px solid rgba(255,255,255,.2); }
 .summary-content dt { color:#aaa29c; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }
 .summary-content dd { margin:0; text-align:right; font-size:13px; }
+.summary-message-preview { margin:0 0 20px; border-bottom:1px solid rgba(255,255,255,.2); }
+.summary-message-preview summary { padding:0 0 14px; color:#d8aab4; font-size:11px; text-transform:uppercase; letter-spacing:.1em; cursor:pointer; }
+.summary-message-preview pre { margin:0 0 18px; padding:15px; overflow:auto; color:#ded7d1; background:rgba(255,255,255,.06); font:11px/1.55 Arial,Helvetica,sans-serif; white-space:pre-wrap; overflow-wrap:anywhere; }
 .booking-submit { width:100%; min-height:58px; padding:0 22px; display:flex; justify-content:space-between; align-items:center; color:var(--ink); background:var(--paper); border:1px solid var(--paper); font-size:12px; text-transform:uppercase; letter-spacing:.1em; cursor:pointer; transition:background .2s,transform .2s; }
 .booking-submit:hover:not(:disabled) { background:#eadfd3; transform:translateY(-2px); }
 .booking-submit:disabled { opacity:.34; cursor:not-allowed; }
