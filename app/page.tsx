@@ -1,13 +1,8 @@
 import Image from "next/image";
 import { catalogCategories } from "./services-data";
+import PortfolioCarousel from "./PortfolioCarousel";
 
 const bookingUrl = "/booking";
-
-const works = [
-  { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка", description: "Обновление цвета и формы — результат крупным планом, без ретуши." },
-  { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка", description: "Мягкие слои и укладка, которая подчёркивает движение волос." },
-  { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка", description: "Чистая форма, плавный переход и аккуратная окантовка." },
-];
 
 const reviews = [
   { name: "Ольга", text: "Отличный мастер! Спасибо за стрижку и приятное общение! ❤️" },
@@ -99,14 +94,7 @@ export default function Home() {
 
         <section className="section works" id="works">
           <div className="section-heading light"><div><p className="eyebrow">Портфолио</p><h2>Результат говорит<br /><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
-          <div className="works-grid">
-            {works.map((work) => (
-              <figure className="work" key={work.src}>
-                <div className="work-media"><Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 52vw" /></div>
-                <figcaption><span className="work-kicker">Реальная работа</span><h3>{work.label}</h3><p>{work.description}</p><a className="work-link" href={bookingUrl}>Записаться на похожий образ <span>↗</span></a></figcaption>
-              </figure>
-            ))}
-          </div>
+          <PortfolioCarousel />
           <a className="button button-light" href="https://vk.ru/assol_krasota">Больше работ во ВКонтакте <span>↗</span></a>
         </section>
 

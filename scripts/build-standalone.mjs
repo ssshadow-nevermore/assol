@@ -117,10 +117,13 @@ const mainPage = `
     </section>
     <section class="section works" id="works">
       <div class="section-heading light"><div><p class="eyebrow">Портфолио</p><h2>Результат говорит<br><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
-      <div class="works-grid">
-        <figure class="work"><div class="work-media"><img src="${images["portfolio-color-refresh.webp"]}" alt="Окрашивание волос до и после в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Окрашивание · Стрижка</h3><p>Обновление цвета и формы — результат крупным планом, без ретуши.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
-        <figure class="work"><div class="work-media"><img src="${images["clean-women-hair.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Стрижка · Укладка</h3><p>Мягкие слои и укладка, которая подчёркивает движение волос.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
-        <figure class="work"><div class="work-media"><img src="${images["clean-men.webp"]}" alt="Мужская стрижка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Мужская стрижка</h3><p>Чистая форма, плавный переход и аккуратная окантовка.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+      <div class="works-carousel" aria-roledescription="карусель" aria-label="Работы мастеров салона Ассоль">
+        <div class="works-viewport"><div class="works-track">
+          <figure class="work" aria-hidden="false"><div class="work-media"><img src="${images["portfolio-color-refresh.webp"]}" alt="Окрашивание волос до и после в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Окрашивание · Стрижка</h3><p>Обновление цвета и формы — результат крупным планом, без ретуши.</p><a class="work-link" href="#booking" data-booking>Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+          <figure class="work" aria-hidden="true"><div class="work-media"><img src="${images["clean-women-hair.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Стрижка · Укладка</h3><p>Мягкие слои и укладка, которая подчёркивает движение волос.</p><a class="work-link" href="#booking" data-booking tabindex="-1">Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+          <figure class="work" aria-hidden="true"><div class="work-media"><img src="${images["clean-men.webp"]}" alt="Мужская стрижка в салоне Ассоль"></div><figcaption><span class="work-kicker">Реальная работа</span><h3>Мужская стрижка</h3><p>Чистая форма, плавный переход и аккуратная окантовка.</p><a class="work-link" href="#booking" data-booking tabindex="-1">Записаться на похожий образ <span>↗</span></a></figcaption></figure>
+        </div></div>
+        <div class="works-controls"><div class="works-dots" aria-label="Выбрать работу"><button class="active" type="button" data-work-slide="0" aria-label="Показать: Окрашивание и стрижка" aria-current="true"></button><button type="button" data-work-slide="1" aria-label="Показать: Стрижка и укладка"></button><button type="button" data-work-slide="2" aria-label="Показать: Мужская стрижка"></button></div><div class="works-arrows"><button type="button" data-work-prev aria-label="Предыдущая работа">←</button><button type="button" data-work-next aria-label="Следующая работа">→</button></div></div>
       </div>
       <a class="button button-light" href="https://vk.ru/assol_krasota" target="_blank" rel="noreferrer">Больше работ во ВКонтакте <span>↗</span></a>
     </section>
@@ -216,6 +219,61 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
       renderBooking();
       window.scrollTo(0, 0);
     }
+  }
+
+  function initPortfolioCarousel() {
+    const carousel = document.querySelector(".works-carousel");
+    if (!carousel) return;
+    const track = carousel.querySelector(".works-track");
+    const slides = Array.from(carousel.querySelectorAll(".work"));
+    const dots = Array.from(carousel.querySelectorAll("[data-work-slide]"));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let activeIndex = 0;
+    let paused = false;
+    let timer;
+
+    function showSlide(index) {
+      activeIndex = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${activeIndex * 100}%)`;
+      slides.forEach((slide, slideIndex) => {
+        const active = slideIndex === activeIndex;
+        slide.setAttribute("aria-hidden", String(!active));
+        const link = slide.querySelector("a");
+        if (link) link.tabIndex = active ? 0 : -1;
+      });
+      dots.forEach((dot, dotIndex) => {
+        const active = dotIndex === activeIndex;
+        dot.classList.toggle("active", active);
+        if (active) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+    }
+
+    function stopAutoplay() {
+      window.clearInterval(timer);
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      if (!paused && !reducedMotion) timer = window.setInterval(() => showSlide(activeIndex + 1), 5200);
+    }
+
+    carousel.addEventListener("mouseenter", () => { paused = true; stopAutoplay(); });
+    carousel.addEventListener("mouseleave", () => { paused = false; startAutoplay(); });
+    carousel.addEventListener("focusin", () => { paused = true; stopAutoplay(); });
+    carousel.addEventListener("focusout", (event) => {
+      if (!carousel.contains(event.relatedTarget)) { paused = false; startAutoplay(); }
+    });
+    carousel.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (button.hasAttribute("data-work-prev")) showSlide(activeIndex - 1);
+      if (button.hasAttribute("data-work-next")) showSlide(activeIndex + 1);
+      if (button.hasAttribute("data-work-slide")) showSlide(Number(button.dataset.workSlide));
+      startAutoplay();
+    });
+    showSlide(0);
+    startAutoplay();
   }
 
   function selectCategory(categoryId) {
@@ -357,6 +415,7 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
   document.querySelectorAll("[data-booking]").forEach((link) => link.addEventListener("click", () => { location.hash = "#booking"; }));
   renderBooking();
   setView();
+  initPortfolioCarousel();
 }
 
 const serializedCatalog = JSON.stringify(catalogCategories).replaceAll("<", "\\u003c");
