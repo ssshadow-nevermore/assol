@@ -1,6 +1,4 @@
-export const VK_COMMUNITY_ID = "232132454";
-
-export function buildVkBookingMessage({
+export function buildBookingMessage({
   category,
   service,
   price,
@@ -22,8 +20,4 @@ export function buildVkBookingMessage({
     `Телефон: ${phone}`,
     comment.trim() ? `Комментарий: ${comment.trim()}` : "",
   ].filter(Boolean).join("\n");
-}
-
-export function buildVkMessageUrl(message) {
-  return `https://vk.com/write-${VK_COMMUNITY_ID}?text=${encodeURIComponent(message)}`;
 }

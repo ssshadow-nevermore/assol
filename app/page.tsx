@@ -4,9 +4,9 @@ import { catalogCategories } from "./services-data";
 const bookingUrl = "/booking";
 
 const works = [
-  { src: "/images/gallery-9.webp", alt: "Окрашивание и женская стрижка в салоне Ассоль", label: "Окрашивание · Стрижка" },
-  { src: "/images/gallery-10.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка" },
-  { src: "/images/gallery-5.webp", alt: "Мужская стрижка до и после в салоне Ассоль", label: "Мужская стрижка" },
+  { src: "/images/clean-color.webp", alt: "Окрашивание и женская стрижка в салоне Ассоль", label: "Окрашивание · Стрижка" },
+  { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка" },
+  { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка" },
 ];
 
 const reviews = [
@@ -60,7 +60,7 @@ export default function Home() {
             <div className="hero-proof"><strong>4,6</strong><span className="stars">★★★★★</span><span>54 отзыва на Яндекс Картах</span></div>
           </div>
           <div className="hero-visual" aria-label="Результат работы мастера салона">
-            <Image src="/images/gallery-9.webp" alt="Результат окрашивания волос в салоне Ассоль" fill priority sizes="(max-width: 720px) 88vw, 34vw" />
+            <Image src="/images/clean-color.webp" alt="Результат окрашивания волос в салоне Ассоль" fill priority sizes="(max-width: 720px) 88vw, 34vw" />
             <div className="hero-note"><span>01</span><p>Бережно к волосам.<br />Точно к вашему образу.</p></div>
           </div>
           <p className="hero-address">Пушкино · Московский проспект, 44</p>
@@ -124,13 +124,13 @@ export default function Home() {
         </section>
 
         <section className="section atmosphere">
-          <div className="atmosphere-photo"><Image src="/images/gallery-4.webp" alt="Зона ресепшена салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) 100vw, 46vw" /></div>
+          <div className="atmosphere-photo"><Image src="/images/salon-interior-clean.webp" alt="Интерьер салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) 100vw, 46vw" /></div>
           <div className="atmosphere-copy"><p className="eyebrow">В салоне</p><h2>Спокойно.<br /><em>Уютно. По-настоящему.</em></h2><p>Мы рядом, нас легко найти, а внутри есть всё, чтобы вы отдохнули и доверили заботу о себе профессионалам.</p><ul><li>Оплата картой</li><li>Парковка рядом</li><li>Wi-Fi</li><li>Доступная среда</li></ul></div>
         </section>
 
         <section className="contacts" id="contacts">
           <div className="contacts-copy"><p className="eyebrow">Контакты</p><h2>Будем рады<br /><em>видеть вас</em></h2><address>Московская область, Пушкино<br />Московский проспект, 44</address><a className="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p className="hours">Ежедневно · 09:00–20:00</p><div className="contact-actions"><a className="button" href={bookingUrl}>Записаться онлайн <span>↗</span></a><a className="text-link" href="https://yandex.ru/maps/org/1089857323">Построить маршрут</a></div></div>
-          <div className="contacts-image"><Image src="/images/photo-2.webp" alt="Вход в салон красоты Ассоль на Московском проспекте 44" width={768} height={1024} sizes="(max-width: 720px) 100vw, 46vw" /><span>Вход со стороны Московского проспекта</span></div>
+          <div className="contacts-image"><Image src="/images/salon-interior-clean.webp" alt="Рабочий зал салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) 100vw, 46vw" /><span>Ждём вас ежедневно · 09:00–20:00</span></div>
         </section>
       </main>
 

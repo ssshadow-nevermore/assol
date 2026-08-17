@@ -38,15 +38,12 @@ const serviceModule = await import(`data:text/javascript;base64,${Buffer.from(se
 const { catalogCategories, masters } = serviceModule;
 
 const imageFiles = [
-  "gallery-9.webp",
-  "gallery-10.webp",
-  "gallery-5.webp",
-  "gallery-4.webp",
-  "photo-2.webp",
-  "booking-color.jpg",
-  "booking-women.jpg",
-  "booking-men.jpg",
-  "booking-children.jpg",
+  "clean-color.webp",
+  "clean-women-hair.webp",
+  "clean-men.webp",
+  "clean-women-bob.webp",
+  "clean-children.webp",
+  "salon-interior-clean.webp",
   "booking-texture.jpg",
   "booking-manicure.jpg",
   "booking-pedicure.jpg",
@@ -105,7 +102,7 @@ const mainPage = `
         <div class="hero-proof"><strong>4,6</strong><span class="stars">★★★★★</span><span>54 отзыва на Яндекс Картах</span></div>
       </div>
       <div class="hero-visual" aria-label="Результат работы мастера салона">
-        <img src="${images["gallery-9.webp"]}" alt="Результат окрашивания волос в салоне Ассоль">
+        <img src="${images["clean-color.webp"]}" alt="Результат окрашивания волос в салоне Ассоль">
         <div class="hero-note"><span>01</span><p>Бережно к волосам.<br>Точно к вашему образу.</p></div>
       </div>
       <p class="hero-address">Пушкино · Московский проспект, 44</p>
@@ -119,9 +116,9 @@ const mainPage = `
     <section class="section works" id="works">
       <div class="section-heading light"><div><p class="eyebrow">Портфолио</p><h2>Результат говорит<br><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
       <div class="works-grid">
-        <figure class="work work-1"><img src="${images["gallery-9.webp"]}" alt="Окрашивание и женская стрижка в салоне Ассоль"><figcaption><span>01</span>Окрашивание · Стрижка</figcaption></figure>
-        <figure class="work work-2"><img src="${images["gallery-10.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"><figcaption><span>02</span>Стрижка · Укладка</figcaption></figure>
-        <figure class="work work-3"><img src="${images["gallery-5.webp"]}" alt="Мужская стрижка до и после в салоне Ассоль"><figcaption><span>03</span>Мужская стрижка</figcaption></figure>
+        <figure class="work work-1"><img src="${images["clean-color.webp"]}" alt="Окрашивание и женская стрижка в салоне Ассоль"><figcaption><span>01</span>Окрашивание · Стрижка</figcaption></figure>
+        <figure class="work work-2"><img src="${images["clean-women-hair.webp"]}" alt="Женская стрижка и укладка в салоне Ассоль"><figcaption><span>02</span>Стрижка · Укладка</figcaption></figure>
+        <figure class="work work-3"><img src="${images["clean-men.webp"]}" alt="Мужская стрижка в салоне Ассоль"><figcaption><span>03</span>Мужская стрижка</figcaption></figure>
       </div>
       <a class="button button-light" href="https://vk.ru/assol_krasota" target="_blank" rel="noreferrer">Больше работ во ВКонтакте <span>↗</span></a>
     </section>
@@ -144,12 +141,12 @@ const mainPage = `
       </div>
     </section>
     <section class="section atmosphere">
-      <div class="atmosphere-photo"><img src="${images["gallery-4.webp"]}" alt="Зона ресепшена салона красоты Ассоль"></div>
+      <div class="atmosphere-photo"><img src="${images["salon-interior-clean.webp"]}" alt="Интерьер салона красоты Ассоль"></div>
       <div class="atmosphere-copy"><p class="eyebrow">В салоне</p><h2>Спокойно.<br><em>Уютно. По-настоящему.</em></h2><p>Мы рядом, нас легко найти, а внутри есть всё, чтобы вы отдохнули и доверили заботу о себе профессионалам.</p><ul><li>Оплата картой</li><li>Парковка рядом</li><li>Wi-Fi</li><li>Доступная среда</li></ul></div>
     </section>
     <section class="contacts" id="contacts">
       <div class="contacts-copy"><p class="eyebrow">Контакты</p><h2>Будем рады<br><em>видеть вас</em></h2><address>Московская область, Пушкино<br>Московский проспект, 44</address><a class="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p class="hours">Ежедневно · 09:00–20:00</p><div class="contact-actions"><a class="button" href="#booking" data-booking>Записаться онлайн <span>↗</span></a><a class="text-link" href="https://yandex.ru/maps/org/1089857323" target="_blank" rel="noreferrer">Построить маршрут</a></div></div>
-      <div class="contacts-image"><img src="${images["photo-2.webp"]}" alt="Вход в салон красоты Ассоль на Московском проспекте 44"><span>Вход со стороны Московского проспекта</span></div>
+      <div class="contacts-image"><img src="${images["salon-interior-clean.webp"]}" alt="Рабочий зал салона красоты Ассоль"><span>Ждём вас ежедневно · 09:00–20:00</span></div>
     </section>
   </main>
   <footer class="footer"><a class="brand brand-footer" href="#top"><span>Ассоль</span><small>салон красоты</small></a><div><a href="https://wa.me/79035150818">WhatsApp</a><a href="https://telegram.me/+79035150818">Telegram</a><a href="https://vk.ru/assol_krasota">ВКонтакте</a></div><p>© <span id="offline-year"></span> Ассоль</p></footer>
@@ -163,18 +160,18 @@ const bookingPage = `
     <a class="booking-back" href="#top" data-home>← Вернуться на сайт</a>
     <a class="header-phone" href="tel:+79035150818">+7 903 515-08-18</a>
   </header>
-  <section class="booking-intro"><div><p class="eyebrow">Запись в салон</p><h1>Выберите время<br><em>для себя</em></h1></div><p>Выберите точную услугу и мастера. Администратор проверит расписание и подтвердит запись во ВКонтакте или по телефону.</p></section>
+  <section class="booking-intro"><div><p class="eyebrow">Запись в салон</p><h1>Выберите время<br><em>для себя</em></h1></div><p>Выберите точную услугу и мастера. Заявка сразу придёт администратору, а запись подтвердят по телефону.</p></section>
   <form class="booking-layout" id="offline-booking-form">
     <div class="booking-form">
       <fieldset class="booking-step"><legend><span>01</span><strong>Направление</strong><small>С чего начнём?</small></legend><div class="booking-categories" id="offline-categories"></div></fieldset>
       <fieldset class="booking-step"><legend><span>02</span><strong>Услуга</strong><small id="offline-service-title"></small></legend><p class="booking-price-note" id="offline-price-note" hidden></p><div class="booking-services detailed" id="offline-services"></div></fieldset>
       <fieldset class="booking-step master-step"><legend><span>03</span><strong>Мастер</strong><small>Специалисты по выбранной услуге</small></legend><div class="master-choices" id="offline-masters"></div></fieldset>
       <fieldset class="booking-step"><legend><span>04</span><strong>Дата и время</strong><small>Укажите удобное окно</small></legend><label class="date-field"><span>Желаемая дата</span><input id="offline-date" type="date" required></label><div class="time-grid" id="offline-times" aria-label="Желаемое время"></div><p class="booking-hint">Выбранное время — пожелание. Администратор подтвердит его или предложит ближайшее свободное.</p></fieldset>
-      <fieldset class="booking-step"><legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend><div class="contact-fields"><label><span>Имя</span><input id="offline-name" type="text" placeholder="Как к вам обращаться" autocomplete="name" required></label><label><span>Телефон</span><input id="offline-phone" type="tel" placeholder="+7 999 000-00-00" autocomplete="tel" required></label><label class="wide"><span>Комментарий <small>необязательно</small></span><textarea id="offline-comment" placeholder="Расскажите о пожеланиях или задайте вопрос" rows="4"></textarea></label></div></fieldset>
+      <fieldset class="booking-step"><legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend><div class="contact-fields"><label><span>Имя</span><input id="offline-name" type="text" placeholder="Как к вам обращаться" autocomplete="name" minlength="2" maxlength="60" required></label><label><span>Телефон</span><input id="offline-phone" type="tel" placeholder="+7 999 000-00-00" autocomplete="tel" inputmode="tel" minlength="10" maxlength="24" pattern="[+0-9() -]{10,24}" title="Введите номер телефона: от 10 до 15 цифр" required></label><label class="wide"><span>Комментарий <small>необязательно</small></span><textarea id="offline-comment" placeholder="Расскажите о пожеланиях или задайте вопрос" rows="4" maxlength="500"></textarea></label></div></fieldset>
     </div>
     <aside class="booking-summary">
       <div class="summary-image"><img id="offline-summary-image" alt=""></div>
-      <div class="summary-content"><p class="eyebrow">Ваша запись</p><h2 id="offline-summary-service"></h2><p class="summary-category" id="offline-summary-category"></p><dl><div><dt>Мастер</dt><dd id="offline-summary-master"></dd></div><div><dt>Дата</dt><dd id="offline-summary-date">Не выбрана</dd></div><div><dt>Время</dt><dd id="offline-summary-time">Не выбрано</dd></div><div><dt>Стоимость</dt><dd id="offline-summary-price"></dd></div><div><dt>Длительность</dt><dd id="offline-summary-duration"></dd></div></dl><button class="booking-submit" id="offline-submit" type="submit" disabled>Отправить заявку <span>→</span></button><p class="summary-note">Нажимая кнопку, вы переходите в сообщения «Ассоль» во ВКонтакте с готовой заявкой. Отправьте её, и мы подтвердим запись.</p><p class="offline-note">Эта страница работает без хостинга. Для перехода во ВКонтакте потребуется обычное подключение к интернету.</p><p class="booking-success" id="offline-success" role="status" hidden></p></div>
+      <div class="summary-content"><p class="eyebrow">Ваша запись</p><h2 id="offline-summary-service"></h2><p class="summary-category" id="offline-summary-category"></p><dl><div><dt>Мастер</dt><dd id="offline-summary-master"></dd></div><div><dt>Дата</dt><dd id="offline-summary-date">Не выбрана</dd></div><div><dt>Время</dt><dd id="offline-summary-time">Не выбрано</dd></div><div><dt>Стоимость</dt><dd id="offline-summary-price"></dd></div><div><dt>Длительность</dt><dd id="offline-summary-duration"></dd></div></dl><button class="booking-submit" id="offline-submit" type="submit" disabled>Отправить заявку <span>→</span></button><p class="summary-note">Нажимая кнопку, вы отправляете заявку администратору салона. Переходить на другой сайт не потребуется.</p><p class="offline-note">Страница открывается без хостинга. Для отправки заявки потребуется подключение к интернету.</p><p class="booking-success" id="offline-success" role="status" hidden></p><p class="booking-error" id="offline-error" role="alert" hidden></p></div>
     </aside>
   </form>
   <footer class="booking-footer"><span>Пушкино · Московский проспект, 44</span><span>Ежедневно · 09:00–20:00</span></footer>
@@ -183,23 +180,29 @@ const bookingPage = `
 function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
   const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
   const imageConfig = {
-    color: ["booking-color.jpg", "Окрашивание волос до и после в салоне Ассоль", "center 38%"],
-    women: ["booking-women.jpg", "Женская стрижка в салоне Ассоль", "center 40%"],
-    men: ["booking-men.jpg", "Мужская стрижка до и после в салоне Ассоль", "center 38%"],
-    children: ["booking-children.jpg", "Короткая стрижка до и после в салоне Ассоль", "center 38%"],
+    color: ["clean-color.webp", "Окрашивание волос в салоне Ассоль", "center 38%"],
+    women: ["clean-women-bob.webp", "Женская стрижка в салоне Ассоль", "center 42%"],
+    men: ["clean-men.webp", "Мужская стрижка в салоне Ассоль", "center 38%"],
+    children: ["clean-children.webp", "Короткая стрижка в салоне Ассоль", "center 38%"],
     texture: ["booking-texture.jpg", "Укладка и объём волос до и после в салоне Ассоль", "center 35%"],
     manicure: ["booking-manicure.jpg", "Маникюр в салоне Ассоль", "center 50%"],
     pedicure: ["booking-pedicure.jpg", "Педикюр в салоне Ассоль", "center 46%"],
     depilation: ["booking-depilation.jpg", "Депиляция в салоне Ассоль", "center 42%"],
     brows: ["booking-brows.jpg", "Архитектура и окрашивание бровей", "center 50%"],
   };
-  const state = { categoryId: catalog[0].id, itemId: catalog[0].items[0].id, masterId: catalog[0].masterIds[0], time: "" };
+  const state = { categoryId: catalog[0].id, itemId: catalog[0].items[0].id, masterId: catalog[0].masterIds[0], time: "", submitState: "idle" };
   const byId = (id) => document.getElementById(id);
   const safe = (value) => String(value ?? "").replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[character]));
   const category = () => catalog.find((item) => item.id === state.categoryId) || catalog[0];
   const service = () => category().items.find((item) => item.id === state.itemId) || category().items[0];
   const availableMasters = () => category().masterIds.map((id) => masterList.find((master) => master.id === id)).filter(Boolean);
   const master = () => availableMasters().find((item) => item.id === state.masterId) || availableMasters()[0];
+
+  function resetFeedback() {
+    state.submitState = "idle";
+    byId("offline-success").hidden = true;
+    byId("offline-error").hidden = true;
+  }
 
   function setView() {
     const sitePage = byId("site-page");
@@ -218,25 +221,25 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
     state.categoryId = selected.id;
     state.itemId = selected.items[0].id;
     state.masterId = selected.masterIds[0];
-    byId("offline-success").hidden = true;
+    resetFeedback();
     renderBooking();
   }
 
   function selectService(itemId) {
     state.itemId = itemId;
-    byId("offline-success").hidden = true;
+    resetFeedback();
     renderBooking();
   }
 
   function selectMaster(masterId) {
     state.masterId = masterId;
-    byId("offline-success").hidden = true;
+    resetFeedback();
     renderBooking();
   }
 
   function selectTime(time) {
     state.time = time;
-    byId("offline-success").hidden = true;
+    resetFeedback();
     renderBooking();
   }
 
@@ -269,28 +272,12 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
   }
 
   function updateReady() {
-    const ready = Boolean(byId("offline-date").value && state.time && byId("offline-name").value.trim() && byId("offline-phone").value.trim());
-    byId("offline-submit").disabled = !ready;
-  }
-
-  async function copyMessage(message) {
-    try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(message);
-        return true;
-      }
-    } catch {
-      // Local files may not receive Clipboard API permission; use the fallback below.
-    }
-    const field = document.createElement("textarea");
-    field.value = message;
-    field.style.position = "fixed";
-    field.style.opacity = "0";
-    document.body.append(field);
-    field.select();
-    const copied = document.execCommand("copy");
-    field.remove();
-    return copied;
+    const phoneDigits = byId("offline-phone").value.replace(/\D/g, "");
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
+    const ready = Boolean(byId("offline-date").value >= today && state.time && byId("offline-name").value.trim().length >= 2 && phoneDigits.length >= 10 && phoneDigits.length <= 15);
+    const submit = byId("offline-submit");
+    submit.disabled = !ready || state.submitState === "sending" || state.submitState === "success";
+    submit.innerHTML = state.submitState === "sending" ? "Отправляем… <span>→</span>" : state.submitState === "success" ? "Заявка отправлена <span>✓</span>" : "Отправить заявку <span>→</span>";
   }
 
   byId("offline-booking-form").addEventListener("click", (event) => {
@@ -302,7 +289,7 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
     if (button.dataset.time) selectTime(button.dataset.time);
   });
   ["offline-date", "offline-name", "offline-phone", "offline-comment"].forEach((id) => byId(id).addEventListener("input", () => {
-    byId("offline-success").hidden = true;
+    resetFeedback();
     renderBooking();
   }));
   byId("offline-booking-form").addEventListener("submit", async (event) => {
@@ -325,12 +312,32 @@ function standaloneApp(catalog, masterList, imageMap, bookingOnly = false) {
       `Телефон: ${byId("offline-phone").value.trim()}`,
       comment ? `Комментарий: ${comment}` : "",
     ].filter(Boolean).join("\n");
-    const vkUrl = `https://vk.com/write-232132454?text=${encodeURIComponent(message)}`;
-    window.open(vkUrl, "_blank", "noopener,noreferrer");
-    const copied = await copyMessage(message);
+    state.submitState = "sending";
+    updateReady();
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
     const success = byId("offline-success");
-    success.textContent = copied ? "Заявка открыта во ВКонтакте с готовым текстом. На всякий случай она также скопирована." : "Заявка открыта во ВКонтакте с готовым текстом — осталось нажать «Отправить».";
-    success.hidden = false;
+    const error = byId("offline-error");
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({ access_key: "bced2591-0bba-4e8a-ae26-060c040ec31a", subject: `Новая заявка: ${selectedService.name}`, from_name: "Сайт салона «Ассоль»", recipient: "jokerz44677@gmail.com", name: byId("offline-name").value.trim(), phone: byId("offline-phone").value.trim(), category: selectedCategory.title, service: selectedService.name, price: selectedService.price, master: selectedMaster.name, date: formattedDate, time: state.time, comment: comment || "Не указан", message, botcheck: "" }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error("Submission failed");
+      state.submitState = "success";
+      success.innerHTML = '<span aria-hidden="true">✓</span><strong>Заявка отправлена</strong> Администратор свяжется с вами по телефону для подтверждения записи.';
+      success.hidden = false;
+    } catch {
+      state.submitState = "error";
+      error.innerHTML = "<strong>Не удалось отправить заявку.</strong> Проверьте подключение к интернету и попробуйте ещё раз или позвоните по номеру +7 903 515-08-18.";
+      error.hidden = false;
+    } finally {
+      window.clearTimeout(timeoutId);
+      updateReady();
+    }
   });
 
   byId("offline-date").min = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());

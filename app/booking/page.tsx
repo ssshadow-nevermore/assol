@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import { catalogCategories, getMasters } from "../services-data";
-import { buildVkBookingMessage } from "./vk-message.mjs";
+import { buildBookingMessage } from "./booking-message.mjs";
 
 const WEB3FORMS_ACCESS_KEY = "bced2591-0bba-4e8a-ae26-060c040ec31a";
 const SALON_EMAIL = "jokerz44677@gmail.com";
@@ -13,10 +13,10 @@ type SubmitState = "idle" | "sending" | "success" | "error";
 const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:00"];
 
 const summaryImages: Record<string, { src: string; alt: string; position: string }> = {
-  color: { src: "/images/booking-color.jpg", alt: "Окрашивание волос до и после в салоне Ассоль", position: "center 38%" },
-  women: { src: "/images/booking-women.jpg", alt: "Женская стрижка в салоне Ассоль", position: "center 40%" },
-  men: { src: "/images/booking-men.jpg", alt: "Мужская стрижка до и после в салоне Ассоль", position: "center 38%" },
-  children: { src: "/images/booking-children.jpg", alt: "Короткая стрижка до и после в салоне Ассоль", position: "center 38%" },
+  color: { src: "/images/clean-color.webp", alt: "Окрашивание волос в салоне Ассоль", position: "center 38%" },
+  women: { src: "/images/clean-women-bob.webp", alt: "Женская стрижка в салоне Ассоль", position: "center 42%" },
+  men: { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", position: "center 38%" },
+  children: { src: "/images/clean-children.webp", alt: "Короткая стрижка в салоне Ассоль", position: "center 38%" },
   texture: { src: "/images/booking-texture.jpg", alt: "Укладка и объём волос до и после в салоне Ассоль", position: "center 35%" },
   manicure: { src: "/images/booking-manicure.jpg", alt: "Маникюр в салоне Ассоль", position: "center 50%" },
   pedicure: { src: "/images/booking-pedicure.jpg", alt: "Педикюр в салоне Ассоль", position: "center 46%" },
@@ -42,11 +42,12 @@ export default function BookingPage() {
   const availableMasters = getMasters(selectedCategory.masterIds);
   const selectedMaster = availableMasters.find((master) => master.id === masterId) ?? availableMasters[0];
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
-  const ready = Boolean(categoryId && itemId && selectedMaster && date && time && name.trim() && phone.trim());
+  const phoneDigits = phone.replace(/\D/g, "");
+  const ready = Boolean(categoryId && itemId && selectedMaster && date >= today && time && name.trim().length >= 2 && phoneDigits.length >= 10 && phoneDigits.length <= 15);
   const formattedDate = date
     ? new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00`))
     : "не выбрана";
-  const bookingMessage = buildVkBookingMessage({
+  const bookingMessage = buildBookingMessage({
     category: selectedCategory.title,
     service: selectedService.name,
     price: selectedService.price,
@@ -75,6 +76,8 @@ export default function BookingPage() {
     if (!ready || !selectedMaster || submitState === "sending") return;
 
     setSubmitState("sending");
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -83,6 +86,7 @@ export default function BookingPage() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        signal: controller.signal,
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `Новая заявка: ${selectedService.name}`,
@@ -107,6 +111,8 @@ export default function BookingPage() {
       setSubmitState("success");
     } catch {
       setSubmitState("error");
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }
 
@@ -202,9 +208,9 @@ export default function BookingPage() {
           <fieldset className="booking-step">
             <legend><span>05</span><strong>Ваши контакты</strong><small>Чтобы подтвердить запись</small></legend>
             <div className="contact-fields">
-              <label><span>Имя</span><input type="text" value={name} onChange={(event) => { setName(event.target.value); resetSubmitState(); }} placeholder="Как к вам обращаться" autoComplete="name" required /></label>
-              <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => { setPhone(event.target.value); resetSubmitState(); }} placeholder="+7 999 000-00-00" autoComplete="tel" required /></label>
-              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onChange={(event) => { setComment(event.target.value); resetSubmitState(); }} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} /></label>
+              <label><span>Имя</span><input type="text" value={name} onChange={(event) => { setName(event.target.value); resetSubmitState(); }} placeholder="Как к вам обращаться" autoComplete="name" minLength={2} maxLength={60} required /></label>
+              <label><span>Телефон</span><input type="tel" value={phone} onChange={(event) => { setPhone(event.target.value); resetSubmitState(); }} placeholder="+7 999 000-00-00" autoComplete="tel" inputMode="tel" minLength={10} maxLength={24} pattern="[+0-9()\s-]{10,24}" title="Введите номер телефона: от 10 до 15 цифр" required /></label>
+              <label className="wide"><span>Комментарий <small>необязательно</small></span><textarea value={comment} onChange={(event) => { setComment(event.target.value); resetSubmitState(); }} placeholder="Расскажите о пожеланиях или задайте вопрос" rows={4} maxLength={500} /></label>
             </div>
           </fieldset>
         </div>
