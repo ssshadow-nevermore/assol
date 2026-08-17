@@ -4,7 +4,7 @@ import { catalogCategories } from "./services-data";
 const bookingUrl = "/booking";
 
 const works = [
-  { src: "/images/clean-color.webp", alt: "Окрашивание и женская стрижка в салоне Ассоль", label: "Окрашивание · Стрижка" },
+  { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка" },
   { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка" },
   { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка" },
 ];
