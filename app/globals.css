@@ -134,7 +134,8 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .contact-actions { display:flex; align-items:center; gap:30px; }
 .contacts-map { position:absolute; z-index:-2; inset:0; background:#d3c3ba; }
 .contacts-map:after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,rgba(124,40,60,.16),rgba(31,29,28,.03) 56%,rgba(31,29,28,.08)); }
-.contacts-map iframe { width:100%; height:100%; display:block; border:0; filter:saturate(.72) contrast(.92); }
+.contacts-map img { width:100%; height:100%; object-fit:cover; object-position:center; filter:saturate(.72) contrast(.92); }
+.contacts-map-mobile { display:none!important; }
 .footer { min-height:190px; padding:45px 7vw; display:flex; justify-content:space-between; align-items:center; background:var(--ink); color:white; }
 .brand-footer small { color:#b9aea5; }
 .footer>div { display:flex; gap:30px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
@@ -214,6 +215,8 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
   .atmosphere-copy ul { grid-template-columns:1fr; }
   .contacts { min-height:820px; padding:58px 18px; align-items:flex-end; }
   .contacts-copy { padding:34px 24px; }
+  .contacts-map-desktop { display:none!important; }
+  .contacts-map-mobile { display:block!important; object-position:62% center!important; }
   .contacts address { margin-top:32px; }
   .contact-actions .button { width:100%; }
   .contact-actions .text-link { display:none; }

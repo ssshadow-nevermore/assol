@@ -46,6 +46,8 @@ const imageFiles = [
   "clean-women-bob.webp",
   "clean-children.webp",
   "salon-interior-clean.webp",
+  "salon-map.png",
+  "salon-map-mobile.png",
   "booking-texture.jpg",
   "booking-manicure.jpg",
   "booking-pedicure.jpg",
@@ -151,7 +153,7 @@ const mainPage = `
     </section>
     <section class="contacts" id="contacts">
       <div class="contacts-copy"><p class="eyebrow">Контакты</p><h2>Будем рады<br><em>видеть вас</em></h2><address>Московская область, Пушкино<br>Московский проспект, 44</address><a class="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p class="hours">Ежедневно · 09:00–20:00</p><div class="contact-actions"><a class="button" href="#booking" data-booking>Записаться онлайн <span>↗</span></a><a class="text-link" href="https://yandex.ru/maps/org/1089857323" target="_blank" rel="noreferrer">Построить маршрут</a></div></div>
-      <div class="contacts-map" aria-label="Карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?mode=search&amp;oid=1089857323&amp;ol=biz&amp;z=16" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <div class="contacts-map" aria-label="Карта с расположением салона красоты Ассоль"><img class="contacts-map-desktop" src="${images["salon-map.png"]}" alt="Карта Пушкино с отметкой салона Ассоль на Московском проспекте, 44"><img class="contacts-map-mobile" src="${images["salon-map-mobile.png"]}" alt=""></div>
     </section>
   </main>
   <footer class="footer"><a class="brand brand-footer" href="#top"><span>Ассоль</span><small>салон красоты</small></a><div><a href="https://wa.me/79035150818">WhatsApp</a><a href="https://telegram.me/+79035150818">Telegram</a><a href="https://vk.ru/assol_krasota">ВКонтакте</a></div><p>© <span id="offline-year"></span> Ассоль</p></footer>
