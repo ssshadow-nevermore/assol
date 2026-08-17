@@ -123,7 +123,7 @@ export default function Home() {
 
         <section className="contacts" id="contacts">
           <div className="contacts-copy"><p className="eyebrow">Контакты</p><h2>Будем рады<br /><em>видеть вас</em></h2><address>Московская область, Пушкино<br />Московский проспект, 44</address><a className="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p className="hours">Ежедневно · 09:00–20:00</p><div className="contact-actions"><a className="button" href={bookingUrl}>Записаться онлайн <span>↗</span></a><a className="text-link" href="https://yandex.ru/maps/org/1089857323">Построить маршрут</a></div></div>
-          <div className="contacts-map" aria-label="Интерактивная карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?mode=search&oid=1089857323&ol=biz&z=16" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" /></div>
+          <div className="contacts-map" aria-label="Интерактивная карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?ll=37.8478%2C56.0027&z=15&pt=37.8582615%2C56.002732%2Cpm2rdm" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" /></div>
         </section>
       </main>
 

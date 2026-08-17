@@ -151,7 +151,7 @@ const mainPage = `
     </section>
     <section class="contacts" id="contacts">
       <div class="contacts-copy"><p class="eyebrow">Контакты</p><h2>Будем рады<br><em>видеть вас</em></h2><address>Московская область, Пушкино<br>Московский проспект, 44</address><a class="contact-phone" href="tel:+79035150818">+7 903 515-08-18</a><p class="hours">Ежедневно · 09:00–20:00</p><div class="contact-actions"><a class="button" href="#booking" data-booking>Записаться онлайн <span>↗</span></a><a class="text-link" href="https://yandex.ru/maps/org/1089857323" target="_blank" rel="noreferrer">Построить маршрут</a></div></div>
-      <div class="contacts-map" aria-label="Интерактивная карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?mode=search&amp;oid=1089857323&amp;ol=biz&amp;z=16" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <div class="contacts-map" aria-label="Интерактивная карта с расположением салона красоты Ассоль"><iframe title="Ассоль на Яндекс Картах" src="https://yandex.ru/map-widget/v1/?ll=37.8478%2C56.0027&amp;z=15&amp;pt=37.8582615%2C56.002732%2Cpm2rdm" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>
     </section>
   </main>
   <footer class="footer"><a class="brand brand-footer" href="#top"><span>Ассоль</span><small>салон красоты</small></a><div><a href="https://wa.me/79035150818">WhatsApp</a><a href="https://telegram.me/+79035150818">Telegram</a><a href="https://vk.ru/assol_krasota">ВКонтакте</a></div><p>© <span id="offline-year"></span> Ассоль</p></footer>
