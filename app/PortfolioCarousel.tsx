@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { DIKIDI_URL } from "./dikidi";
 
 const works = [
   { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка", description: "Обновление цвета и формы — результат крупным планом, без ретуши." },
@@ -9,7 +10,7 @@ const works = [
   { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка", description: "Чистая форма, плавный переход и аккуратная окантовка." },
 ];
 
-const bookingUrl = "/booking";
+const bookingUrl = DIKIDI_URL;
 
 export default function PortfolioCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);

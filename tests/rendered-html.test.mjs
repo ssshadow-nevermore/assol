@@ -2,19 +2,22 @@ import assert from "node:assert/strict";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
+const DIKIDI_URL = "https://dikidi.net/#widget=215695";
+const DIKIDI_SCRIPT_URL = "https://dikidi.net/assets/js/widget_record/widget2.min.js?v=1773811740";
+
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${pathname}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://localhost${pathname}`, { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${pathname}`, { headers: { accept: "text/html" }, redirect: "manual" }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
 }
 
-test("renders the salon landing page with its primary sections", async () => {
+test("renders the salon landing page with DIKIDI booking links", async () => {
   const response = await render("/");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -25,68 +28,42 @@ test("renders the salon landing page with its primary sections", async () => {
   assert.match(html, /Все услуги/);
   assert.match(html, /Результат говорит/);
   assert.match(html, /Московский проспект, 44/);
-  assert.doesNotMatch(html, /Your site is taking shape|codex-preview|Building your site/i);
+  assert.ok(html.includes(DIKIDI_URL));
+  assert.ok(html.includes(DIKIDI_SCRIPT_URL.replaceAll("&", "&amp;")) || html.includes(DIKIDI_SCRIPT_URL));
+  assert.doesNotMatch(html, /Your site is taking shape|codex-preview|\/api\/booking/i);
 });
 
-test("renders the booking route without VK handoff copy", async () => {
+test("legacy booking route redirects to DIKIDI", async () => {
   const response = await render("/booking");
-  assert.equal(response.status, 200);
-
-  const html = await response.text();
-  assert.match(html, /Выберите время/);
-  assert.match(html, /Отправить заявку/);
-  assert.match(html, /Переходить на другой сайт не потребуется/);
-  assert.doesNotMatch(html, /переходите в сообщения|Текст заявки для VK/i);
+  assert.ok([301, 302, 303, 307, 308].includes(response.status));
+  assert.equal(response.headers.get("location"), DIKIDI_URL);
 });
 
-test("all image references exist and legacy text-overlay assets are removed", async () => {
-  const [page, booking, imageFiles] = await Promise.all([
+test("all visible image references exist and legacy assets stay removed", async () => {
+  const [page, portfolio, imageFiles] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/booking/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/PortfolioCarousel.tsx", import.meta.url), "utf8"),
     readdir(new URL("../public/images/", import.meta.url)),
   ]);
-  const sources = [...page.matchAll(/src=["']\/images\/([^"']+)/g), ...booking.matchAll(/src:\s*["']\/images\/([^"']+)/g)].map((match) => match[1]);
+  const sources = [...page.matchAll(/src=["']\/images\/([^"']+)/g), ...portfolio.matchAll(/src:\s*["']\/images\/([^"']+)/g)].map((match) => match[1]);
 
-  assert.ok(sources.length >= 10);
+  assert.ok(sources.length >= 5);
   for (const source of sources) await access(new URL(`../public/images/${source}`, import.meta.url));
 
   const legacyAssets = ["gallery-9.webp", "gallery-10.webp", "gallery-5.webp", "gallery-4.webp", "photo-2.webp", "booking-color.jpg", "booking-women.jpg", "booking-men.jpg", "booking-children.jpg"];
   for (const asset of legacyAssets) assert.equal(imageFiles.includes(asset), false, `${asset} must not be published`);
 });
 
-test("booking submission has client and server validation, timeout, recipient and states", async () => {
-  const [booking, endpoint] = await Promise.all([
+test("custom booking form and email endpoint are removed", async () => {
+  const [page, portfolio, redirectPage] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/PortfolioCarousel.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/booking/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/booking/route.ts", import.meta.url), "utf8"),
   ]);
-  assert.match(booking, /fetch\("\/api\/booking"/);
-  assert.doesNotMatch(booking, /WEB3FORMS_ACCESS_KEY|api\.web3forms\.com/);
-  assert.match(booking, /AbortController/);
-  assert.match(booking, /phoneDigits\.length >= 10/);
-  assert.match(booking, /submitState === "success"/);
-  assert.match(booking, /submitState === "error"/);
-  assert.match(endpoint, /process\.env\.WEB3FORMS_ACCESS_KEY/);
-  assert.match(endpoint, /https:\/\/api\.web3forms\.com\/submit/);
-  assert.match(endpoint, /jokerz44677@gmail\.com/);
-  assert.match(endpoint, /contentLength > 12_000/);
-  assert.match(endpoint, /phoneDigits\.length < 10/);
-  assert.match(endpoint, /ALLOWED_TIMES\.has\(time\)/);
-});
 
-test("booking endpoint rejects an invalid request before email delivery", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-invalid-booking`);
-  const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(
-    new Request("http://localhost/api/booking", {
-      method: "POST",
-      headers: { "content-type": "application/json", "sec-fetch-site": "same-origin" },
-      body: JSON.stringify({ categoryId: "unknown", name: "A", phone: "123" }),
-    }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) }, WEB3FORMS_ACCESS_KEY: "test-key" },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
-
-  assert.equal(response.status, 400);
-  assert.deepEqual(await response.json(), { success: false, message: "Проверьте заполненные данные." });
+  assert.ok(page.includes("DIKIDI_URL"));
+  assert.ok(portfolio.includes("DIKIDI_URL"));
+  assert.match(redirectPage, /redirect\(DIKIDI_URL\)/);
+  await assert.rejects(access(new URL("../app/api/booking/route.ts", import.meta.url)));
+  await assert.rejects(access(new URL("../app/booking/booking-message.mjs", import.meta.url)));
 });

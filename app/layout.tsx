@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
+import { DIKIDI_SCRIPT_URL } from "./dikidi";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://assol-salon.ru"),
@@ -13,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ru"><body>{children}</body></html>;
+  return <html lang="ru"><body>{children}<Script src={DIKIDI_SCRIPT_URL} strategy="afterInteractive" /></body></html>;
 }

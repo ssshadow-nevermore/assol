@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { catalogCategories } from "./services-data";
 import PortfolioCarousel from "./PortfolioCarousel";
+import { DIKIDI_URL } from "./dikidi";
 
-const bookingUrl = "/booking";
+const bookingUrl = DIKIDI_URL;
 
 const reviews = [
   { name: "Ольга", text: "Отличный мастер! Спасибо за стрижку и приятное общение! ❤️" },
