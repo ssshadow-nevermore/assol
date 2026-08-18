@@ -30,6 +30,7 @@ test("renders the salon landing page with DIKIDI booking links", async () => {
   assert.match(html, /Московский проспект, 44/);
   assert.ok(html.includes(DIKIDI_URL));
   assert.ok(html.includes(DIKIDI_SCRIPT_URL.replaceAll("&", "&amp;")) || html.includes(DIKIDI_SCRIPT_URL));
+  assert.match(html, /<script[^>]+widget2\.min\.js[^>]+defer/i);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview|\/api\/booking/i);
 });
 

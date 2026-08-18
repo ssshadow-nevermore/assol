@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { DIKIDI_SCRIPT_URL } from "./dikidi";
 
@@ -15,5 +14,13 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ru"><body>{children}<Script src={DIKIDI_SCRIPT_URL} strategy="afterInteractive" /></body></html>;
+  return (
+    <html lang="ru">
+      <head>
+        {/* DIKIDI binds the booking links during the initial page lifecycle. */}
+        <script type="text/javascript" src={DIKIDI_SCRIPT_URL} defer />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
 }
