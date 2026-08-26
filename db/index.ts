@@ -1,13 +1,8 @@
-import { env } from "cloudflare:workers";
-import { drizzle } from "drizzle-orm/d1";
-import * as schema from "./schema";
-
-export function getDb() {
-  if (!env.DB) {
-    throw new Error(
-      "Cloudflare D1 binding `DB` is unavailable. Set the `d1` field in .openai/hosting.json to `DB` or let your control plane inject the real binding values before using the database."
-    );
-  }
-
-  return drizzle(env.DB, { schema });
-}
+/**
+ * The application database is a regular SQLite file.  Keeping this entry
+ * point tiny makes the future VPS setup (Node + PM2) identical to local dev.
+ * Drizzle's schema remains the canonical model; the request-facing code uses
+ * the small SQL adapter exposed by `getSqliteDatabase` for compatibility with
+ * the existing route handlers.
+ */
+export { closeSqliteDatabase, getSqliteDatabase, sqlitePath } from "./sqlite";

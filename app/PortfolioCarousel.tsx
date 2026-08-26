@@ -2,17 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { DIKIDI_URL } from "./dikidi";
+import type { PortfolioWork } from "./site-data-types";
 
-const works = [
-  { src: "/images/portfolio-color-refresh.webp", alt: "Окрашивание волос до и после в салоне Ассоль", label: "Окрашивание · Стрижка", description: "Обновление цвета и формы — результат крупным планом, без ретуши." },
-  { src: "/images/clean-women-hair.webp", alt: "Женская стрижка и укладка в салоне Ассоль", label: "Стрижка · Укладка", description: "Мягкие слои и укладка, которая подчёркивает движение волос." },
-  { src: "/images/clean-men.webp", alt: "Мужская стрижка в салоне Ассоль", label: "Мужская стрижка", description: "Чистая форма, плавный переход и аккуратная окантовка." },
-];
+type PortfolioCarouselProps = {
+  works: PortfolioWork[];
+  bookingUrl: string;
+};
 
-const bookingUrl = DIKIDI_URL;
-
-export default function PortfolioCarousel() {
+export default function PortfolioCarousel({ works, bookingUrl }: PortfolioCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -26,15 +23,20 @@ export default function PortfolioCarousel() {
   }, []);
 
   useEffect(() => {
-    if (paused || reducedMotion) return;
+    if (paused || reducedMotion || works.length < 2) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % works.length);
     }, 5200);
     return () => window.clearInterval(timer);
-  }, [paused, reducedMotion]);
+  }, [paused, reducedMotion, works.length]);
 
-  const showPrevious = () => setActiveIndex((current) => (current - 1 + works.length) % works.length);
-  const showNext = () => setActiveIndex((current) => (current + 1) % works.length);
+  const showPrevious = () => { if (works.length > 1) setActiveIndex((current) => (current - 1 + works.length) % works.length); };
+  const showNext = () => { if (works.length > 1) setActiveIndex((current) => (current + 1) % works.length); };
+
+  if (works.length === 0) {
+    return <div className="works-empty" role="status">Скоро здесь появятся новые работы мастеров.</div>;
+  }
+  const currentIndex = Math.min(activeIndex, works.length - 1);
 
   return (
     <div
@@ -49,17 +51,17 @@ export default function PortfolioCarousel() {
       }}
     >
       <div className="works-viewport">
-        <div className="works-track" style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
+        <div className="works-track" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
           {works.map((work, index) => (
-            <figure className="work" key={work.src} aria-hidden={index !== activeIndex}>
+            <figure className="work" key={work.id} aria-hidden={index !== currentIndex}>
               <div className="work-media">
                 <Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 52vw" priority={index === 0} />
               </div>
               <figcaption>
                 <span className="work-kicker">Реальная работа</span>
                 <h3>{work.label}</h3>
-                <p>{work.description}</p>
-                <a className="work-link" href={bookingUrl} tabIndex={index === activeIndex ? 0 : -1}>Записаться на похожий образ <span>↗</span></a>
+                {work.description.trim() ? <p className="work-description">{work.description}</p> : null}
+                <a className="work-link" href={bookingUrl} tabIndex={index === currentIndex ? 0 : -1}>Записаться на похожий образ <span>↗</span></a>
               </figcaption>
             </figure>
           ))}
@@ -69,12 +71,12 @@ export default function PortfolioCarousel() {
         <div className="works-dots" aria-label="Выбрать работу">
           {works.map((work, index) => (
             <button
-              className={index === activeIndex ? "active" : ""}
+              className={index === currentIndex ? "active" : ""}
               type="button"
-              key={work.src}
+              key={work.id}
               onClick={() => setActiveIndex(index)}
               aria-label={`Показать: ${work.label}`}
-              aria-current={index === activeIndex ? "true" : undefined}
+              aria-current={index === currentIndex ? "true" : undefined}
             />
           ))}
         </div>

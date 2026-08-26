@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local development (or provide the same names via the
+# Node process environment) and fill values locally. Never commit the values.
+YC_ACCESS_KEY_ID=
+YC_SECRET_ACCESS_KEY=
+YC_BUCKET_NAME=assol-site-media
+ADMIN_DEV_BYPASS=false
+ADMIN_OWNER_LOGIN=
+ADMIN_OWNER_PASSWORD_VERIFIER=
+ADMIN_DEVELOPER_LOGIN=
+ADMIN_DEVELOPER_PASSWORD_VERIFIER=
+AUTH_PASSWORD_PEPPER=

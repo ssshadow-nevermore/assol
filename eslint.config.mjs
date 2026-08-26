@@ -10,6 +10,9 @@ import tseslint from "typescript-eslint";
 const eslintConfig = defineConfig([
   globalIgnores([
     ".next/**",
+    ".wrangler/**",
+    ".playwright-browsers/**",
+    "scripts/.qa-*",
     "dist/**",
     "out/**",
     "build/**",

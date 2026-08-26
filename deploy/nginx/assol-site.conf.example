@@ -1,0 +1,29 @@
+# Nginx reverse-proxy template for the future VPS deployment.
+# Replace example.com with the real domain only during the VPS/DNS task.
+# TLS/certbot configuration is intentionally not included here.
+
+upstream assol_site {
+    server 127.0.0.1:3000;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name example.com www.example.com;
+
+    # Keep this aligned with the application media validator (8 MiB).
+    client_max_body_size 8m;
+
+    location / {
+        proxy_pass http://assol_site;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+    }
+}

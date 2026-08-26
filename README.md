@@ -1,31 +1,55 @@
-# vinext-starter
+# Ассоль — VINEXT + SQLite
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Полноценный сайт салона на VINEXT с обычным Node.js runtime, SQLite и
+серверным доступом к Yandex Object Storage.
 
 ## Prerequisites
 
-- Node.js `>=22.13.0`
+- Node.js `>=24.0.0`
 
 ## Quick Start
 
 ```bash
-npm install
-npm run dev
-npm run build
+pnpm install
+pnpm run db:init
+pnpm run dev -- --hostname 127.0.0.1
+pnpm run build
+pnpm start
 ```
 
-This starter does not use `wrangler.jsonc`.
+On Windows installations where `pnpm exec tsc --noEmit` cannot resolve the
+binary shim, use `./node_modules/.bin/tsc.cmd --noEmit`.
+
+The app does not require Wrangler or a Cloudflare Worker runtime. SQLite is
+created at `.data/site.sqlite` by `db:init` (override with `SQLITE_PATH`), and
+the standalone production server listens on `HOST`/`PORT` (defaults to
+`0.0.0.0:3000`).
+
+## Future VPS templates
+
+`ecosystem.config.cjs` is a PM2 template for the built standalone server.
+`deploy/nginx/assol-site.conf.example` is a reverse-proxy template; replace
+its placeholder domain only during the separate VPS/DNS setup. Neither file
+contains credentials or performs deployment.
+
+Create a consistent local SQLite backup with:
+
+```bash
+pnpm run db:backup
+```
+
+The source database is selected by `SQLITE_PATH` (or `DATABASE_PATH`) and
+backups are written to `.data/backups` (override with `SQLITE_BACKUP_DIR`).
 
 ## Included Shape
 
 - edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+- `db/schema.ts` is the canonical SQLite/Drizzle schema
+- `drizzle/*.sql` are applied locally by `pnpm run db:init`
+- `scripts/create-admin-verifier.mjs` creates PBKDF2 password verifiers without
+  accepting passwords as command-line arguments
+- `examples/d1/`, `wrangler.d1.jsonc` and historical seed naming are retained
+  only as migration history and are not imported by the Node runtime
 
 ## Workspace Auth Headers
 

@@ -62,7 +62,6 @@ body.booking-view { padding-bottom:0; }
 const serviceCatalog = catalogCategories.map((category, index) => `
   <details class="service-category"${index === 0 ? " open" : ""}>
     <summary>
-      <span class="service-number">${escapeHtml(category.number)}</span>
       <span class="service-category-title"><strong>${escapeHtml(category.title)}</strong><small>${escapeHtml(category.description)}</small></span>
       <span class="service-category-price">${escapeHtml(category.priceFrom)}</span>
       <span class="service-toggle" aria-hidden="true">+</span>
@@ -105,7 +104,7 @@ const mainPage = `
     </section>
     <section class="marquee" aria-label="Направления салона"><div>СТРИЖКИ <i>✦</i> ОКРАШИВАНИЕ <i>✦</i> МАНИКЮР <i>✦</i> БРОВИ <i>✦</i> УХОД</div></section>
     <section class="section services" id="services">
-      <div class="section-heading"><div><p class="eyebrow">Полный прайс</p><h2>Все услуги<br><em>в одном месте</em></h2></div><p>Мы перенесли подробный актуальный прайс. Откройте нужное направление, чтобы посмотреть процедуры и стоимость.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">Полный прайс</p><h2>Все услуги<br><em>в одном месте</em></h2></div><p>Выберите направление и найдите процедуру, которая подчеркнёт вашу красоту и подарит ощущение обновления.</p></div>
       <div class="service-catalog">${serviceCatalog}</div>
       <p class="price-note">Итоговая стоимость окрашивания зависит от длины и густоты волос, сложности работы и расхода красителя. Мастер подтвердит цену до начала процедуры.</p>
     </section>

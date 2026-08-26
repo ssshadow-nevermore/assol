@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { DIKIDI_SCRIPT_URL } from "./dikidi";
+import { getSiteData } from "./site-data";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://assol-salon.ru"),
@@ -13,12 +13,17 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const siteData = await getSiteData();
+  const dikidiScriptUrl = siteData.links.dikidi_script.url;
   return (
     <html lang="ru">
       <head>
         {/* DIKIDI binds the booking links during the initial page lifecycle. */}
-        <script type="text/javascript" src={DIKIDI_SCRIPT_URL} defer />
+        <script type="text/javascript" src={dikidiScriptUrl} defer />
       </head>
       <body>{children}</body>
     </html>

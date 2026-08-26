@@ -35,6 +35,13 @@ start-error.log
 
 # env files (can opt-in for committing if needed)
 .env*
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!.env.example
+
+# Local SQLite database
+/.data/
 
 # vercel
 .vercel
@@ -43,3 +50,21 @@ start-error.log
 /.wrangler/
 /outputs/
 /work/
+*.tsbuildinfo
+
+# QA artifacts
+/.qa-*
+/.qa_*
+/qa-*.png
+/qa_*.png
+/.qa-*.png
+/.qa_*.png
+/.qa-*.mjs
+/.qa_*.mjs
+
+# Local logs / temp files
+/debug.log
+/*.log
+
+# Local user/test files
+/user_files/

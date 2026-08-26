@@ -1,0 +1,1538 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "75610a94-6352-4826-9146-5d02937dc413",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "external_links": {
+      "name": "external_links",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "link_key": {
+          "name": "link_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone_to_copy": {
+          "name": "phone_to_copy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "open_in_new_tab": {
+          "name": "open_in_new_tab",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "external_links_link_key_unique": {
+          "name": "external_links_link_key_unique",
+          "columns": [
+            "link_key"
+          ],
+          "isUnique": true
+        },
+        "external_links_active_sort_idx": {
+          "name": "external_links_active_sort_idx",
+          "columns": [
+            "is_active",
+            "sort_order"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "external_links_kind_check": {
+          "name": "external_links_kind_check",
+          "value": "\"external_links\".\"kind\" IN ('vk', 'max', 'email', 'dikidi_widget', 'dikidi_script', 'yandex_maps', 'yandex_reviews', 'other')"
+        },
+        "external_links_open_in_new_tab_check": {
+          "name": "external_links_open_in_new_tab_check",
+          "value": "\"external_links\".\"open_in_new_tab\" IN (0, 1)"
+        },
+        "external_links_is_active_check": {
+          "name": "external_links_is_active_check",
+          "value": "\"external_links\".\"is_active\" IN (0, 1)"
+        }
+      }
+    },
+    "offer_conditions": {
+      "name": "offer_conditions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "offer_id": {
+          "name": "offer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "condition_type": {
+          "name": "condition_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "operator": {
+          "name": "operator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'custom'"
+        },
+        "amount_value": {
+          "name": "amount_value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "text_value": {
+          "name": "text_value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "service_id": {
+          "name": "service_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "service_category_id": {
+          "name": "service_category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "offer_conditions_offer_active_sort_idx": {
+          "name": "offer_conditions_offer_active_sort_idx",
+          "columns": [
+            "offer_id",
+            "is_active",
+            "sort_order"
+          ],
+          "isUnique": false
+        },
+        "offer_conditions_service_idx": {
+          "name": "offer_conditions_service_idx",
+          "columns": [
+            "service_id"
+          ],
+          "isUnique": false
+        },
+        "offer_conditions_category_idx": {
+          "name": "offer_conditions_category_idx",
+          "columns": [
+            "service_category_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "offer_conditions_offer_id_offers_id_fk": {
+          "name": "offer_conditions_offer_id_offers_id_fk",
+          "tableFrom": "offer_conditions",
+          "tableTo": "offers",
+          "columnsFrom": [
+            "offer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "offer_conditions_service_id_services_id_fk": {
+          "name": "offer_conditions_service_id_services_id_fk",
+          "tableFrom": "offer_conditions",
+          "tableTo": "services",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "offer_conditions_service_category_id_service_categories_id_fk": {
+          "name": "offer_conditions_service_category_id_service_categories_id_fk",
+          "tableFrom": "offer_conditions",
+          "tableTo": "service_categories",
+          "columnsFrom": [
+            "service_category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "offer_conditions_type_check": {
+          "name": "offer_conditions_type_check",
+          "value": "\"offer_conditions\".\"condition_type\" IN ('minimum_single_service_price', 'minimum_order_total', 'service_purchase', 'category_purchase', 'new_customer', 'nth_visit', 'custom')"
+        },
+        "offer_conditions_operator_check": {
+          "name": "offer_conditions_operator_check",
+          "value": "\"offer_conditions\".\"operator\" IN ('gt', 'gte', 'eq', 'lte', 'lt', 'custom')"
+        },
+        "offer_conditions_value_check": {
+          "name": "offer_conditions_value_check",
+          "value": "(\n        (\"offer_conditions\".\"condition_type\" IN ('minimum_single_service_price', 'minimum_order_total') AND \"offer_conditions\".\"operator\" IN ('gt', 'gte', 'eq', 'lte', 'lt') AND \"offer_conditions\".\"amount_value\" IS NOT NULL AND \"offer_conditions\".\"amount_value\" >= 0)\n        OR (\"offer_conditions\".\"condition_type\" = 'service_purchase' AND \"offer_conditions\".\"service_id\" IS NOT NULL)\n        OR (\"offer_conditions\".\"condition_type\" = 'category_purchase' AND \"offer_conditions\".\"service_category_id\" IS NOT NULL)\n        OR (\"offer_conditions\".\"condition_type\" = 'nth_visit' AND \"offer_conditions\".\"amount_value\" IS NOT NULL AND \"offer_conditions\".\"amount_value\" >= 2)\n        OR \"offer_conditions\".\"condition_type\" IN ('new_customer', 'custom')\n      )"
+        },
+        "offer_conditions_is_active_check": {
+          "name": "offer_conditions_is_active_check",
+          "value": "\"offer_conditions\".\"is_active\" IN (0, 1)"
+        }
+      }
+    },
+    "offer_service_rules": {
+      "name": "offer_service_rules",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "offer_id": {
+          "name": "offer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "service_id": {
+          "name": "service_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rule_type": {
+          "name": "rule_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "discount_amount": {
+          "name": "discount_amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "discount_percent": {
+          "name": "discount_percent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "free_visit_number": {
+          "name": "free_visit_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usage_limit": {
+          "name": "usage_limit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "shared_usage_group": {
+          "name": "shared_usage_group",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "offer_service_rules_offer_service_unique": {
+          "name": "offer_service_rules_offer_service_unique",
+          "columns": [
+            "offer_id",
+            "service_id"
+          ],
+          "isUnique": true
+        },
+        "offer_service_rules_offer_active_idx": {
+          "name": "offer_service_rules_offer_active_idx",
+          "columns": [
+            "offer_id",
+            "is_active"
+          ],
+          "isUnique": false
+        },
+        "offer_service_rules_service_active_idx": {
+          "name": "offer_service_rules_service_active_idx",
+          "columns": [
+            "service_id",
+            "is_active"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "offer_service_rules_offer_id_offers_id_fk": {
+          "name": "offer_service_rules_offer_id_offers_id_fk",
+          "tableFrom": "offer_service_rules",
+          "tableTo": "offers",
+          "columnsFrom": [
+            "offer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "offer_service_rules_service_id_services_id_fk": {
+          "name": "offer_service_rules_service_id_services_id_fk",
+          "tableFrom": "offer_service_rules",
+          "tableTo": "services",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "offer_service_rules_rule_type_check": {
+          "name": "offer_service_rules_rule_type_check",
+          "value": "\"offer_service_rules\".\"rule_type\" IN ('fixed_discount', 'percent_discount', 'free', 'free_nth_visit')"
+        },
+        "offer_service_rules_values_check": {
+          "name": "offer_service_rules_values_check",
+          "value": "(\n        (\"offer_service_rules\".\"rule_type\" = 'fixed_discount' AND \"offer_service_rules\".\"discount_amount\" IS NOT NULL AND \"offer_service_rules\".\"discount_amount\" > 0 AND \"offer_service_rules\".\"discount_percent\" IS NULL AND \"offer_service_rules\".\"free_visit_number\" IS NULL)\n        OR (\"offer_service_rules\".\"rule_type\" = 'percent_discount' AND \"offer_service_rules\".\"discount_percent\" BETWEEN 1 AND 100 AND \"offer_service_rules\".\"discount_amount\" IS NULL AND \"offer_service_rules\".\"free_visit_number\" IS NULL)\n        OR (\"offer_service_rules\".\"rule_type\" = 'free' AND \"offer_service_rules\".\"discount_amount\" IS NULL AND \"offer_service_rules\".\"discount_percent\" IS NULL AND \"offer_service_rules\".\"free_visit_number\" IS NULL)\n        OR (\"offer_service_rules\".\"rule_type\" = 'free_nth_visit' AND \"offer_service_rules\".\"free_visit_number\" IS NOT NULL AND \"offer_service_rules\".\"free_visit_number\" >= 2 AND \"offer_service_rules\".\"discount_amount\" IS NULL AND \"offer_service_rules\".\"discount_percent\" IS NULL)\n      )"
+        },
+        "offer_service_rules_usage_limit_check": {
+          "name": "offer_service_rules_usage_limit_check",
+          "value": "\"offer_service_rules\".\"usage_limit\" IS NULL OR \"offer_service_rules\".\"usage_limit\" > 0"
+        },
+        "offer_service_rules_is_active_check": {
+          "name": "offer_service_rules_is_active_check",
+          "value": "\"offer_service_rules\".\"is_active\" IN (0, 1)"
+        }
+      }
+    },
+    "offers": {
+      "name": "offers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "linked_service_id": {
+          "name": "linked_service_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "short_title": {
+          "name": "short_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "eyebrow": {
+          "name": "eyebrow",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "legal_note": {
+          "name": "legal_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "benefit_type": {
+          "name": "benefit_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "benefit_value": {
+          "name": "benefit_value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "nominal_value": {
+          "name": "nominal_value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'RUB'"
+        },
+        "free_visit_number": {
+          "name": "free_visit_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "front_storage_key": {
+          "name": "front_storage_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "front_url": {
+          "name": "front_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "back_storage_key": {
+          "name": "back_storage_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "back_url": {
+          "name": "back_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valid_until": {
+          "name": "valid_until",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_transferable": {
+          "name": "is_transferable",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "can_combine_with_other_offers": {
+          "name": "can_combine_with_other_offers",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "offers_slug_unique": {
+          "name": "offers_slug_unique",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": true
+        },
+        "offers_status_sort_idx": {
+          "name": "offers_status_sort_idx",
+          "columns": [
+            "status",
+            "sort_order"
+          ],
+          "isUnique": false
+        },
+        "offers_linked_service_idx": {
+          "name": "offers_linked_service_idx",
+          "columns": [
+            "linked_service_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "offers_linked_service_id_services_id_fk": {
+          "name": "offers_linked_service_id_services_id_fk",
+          "tableFrom": "offers",
+          "tableTo": "services",
+          "columnsFrom": [
+            "linked_service_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "offers_type_check": {
+          "name": "offers_type_check",
+          "value": "\"offers\".\"type\" IN ('promotion', 'loyalty', 'certificate', 'gift_card')"
+        },
+        "offers_benefit_type_check": {
+          "name": "offers_benefit_type_check",
+          "value": "\"offers\".\"benefit_type\" IN ('fixed_discount', 'percent_discount', 'nominal', 'free_nth_visit', 'free_service', 'custom')"
+        },
+        "offers_nominal_value_check": {
+          "name": "offers_nominal_value_check",
+          "value": "\"offers\".\"benefit_type\" <> 'nominal' OR (\"offers\".\"nominal_value\" IS NOT NULL AND \"offers\".\"nominal_value\" >= 0 AND \"offers\".\"benefit_value\" IS NULL)"
+        },
+        "offers_free_nth_visit_check": {
+          "name": "offers_free_nth_visit_check",
+          "value": "\"offers\".\"benefit_type\" <> 'free_nth_visit' OR (\"offers\".\"free_visit_number\" IS NOT NULL AND \"offers\".\"free_visit_number\" >= 2)"
+        },
+        "offers_validity_range_check": {
+          "name": "offers_validity_range_check",
+          "value": "\"offers\".\"valid_from\" IS NULL OR \"offers\".\"valid_until\" IS NULL OR \"offers\".\"valid_until\" >= \"offers\".\"valid_from\""
+        },
+        "offers_is_transferable_check": {
+          "name": "offers_is_transferable_check",
+          "value": "\"offers\".\"is_transferable\" IN (0, 1)"
+        },
+        "offers_can_combine_check": {
+          "name": "offers_can_combine_check",
+          "value": "\"offers\".\"can_combine_with_other_offers\" IN (0, 1)"
+        },
+        "offers_status_check": {
+          "name": "offers_status_check",
+          "value": "\"offers\".\"status\" IN ('draft', 'active', 'hidden', 'expired')"
+        }
+      }
+    },
+    "portfolio_items": {
+      "name": "portfolio_items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "service_category_id": {
+          "name": "service_category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "alt_text": {
+          "name": "alt_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "image_storage_key": {
+          "name": "image_storage_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "portfolio_items_active_sort_idx": {
+          "name": "portfolio_items_active_sort_idx",
+          "columns": [
+            "is_active",
+            "sort_order"
+          ],
+          "isUnique": false
+        },
+        "portfolio_items_category_idx": {
+          "name": "portfolio_items_category_idx",
+          "columns": [
+            "service_category_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "portfolio_items_service_category_id_service_categories_id_fk": {
+          "name": "portfolio_items_service_category_id_service_categories_id_fk",
+          "tableFrom": "portfolio_items",
+          "tableTo": "service_categories",
+          "columnsFrom": [
+            "service_category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "portfolio_items_is_active_check": {
+          "name": "portfolio_items_is_active_check",
+          "value": "\"portfolio_items\".\"is_active\" IN (0, 1)"
+        },
+        "portfolio_items_image_reference_check": {
+          "name": "portfolio_items_image_reference_check",
+          "value": "\"portfolio_items\".\"image_storage_key\" IS NOT NULL OR \"portfolio_items\".\"image_url\" IS NOT NULL"
+        }
+      }
+    },
+    "salon_settings": {
+      "name": "salon_settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "salon_name": {
+          "name": "salon_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_phone": {
+          "name": "display_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "region": {
+          "name": "region",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "street_address": {
+          "name": "street_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "yandex_organization_id": {
+          "name": "yandex_organization_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logo_storage_key": {
+          "name": "logo_storage_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logo_url": {
+          "name": "logo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "salon_settings_singleton_check": {
+          "name": "salon_settings_singleton_check",
+          "value": "\"salon_settings\".\"id\" = 1"
+        },
+        "salon_settings_is_active_check": {
+          "name": "salon_settings_is_active_check",
+          "value": "\"salon_settings\".\"is_active\" IN (0, 1)"
+        }
+      }
+    },
+    "service_categories": {
+      "name": "service_categories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "legacy_id": {
+          "name": "legacy_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "number": {
+          "name": "number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "short_title": {
+          "name": "short_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "price_from_type": {
+          "name": "price_from_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'from'"
+        },
+        "price_from_amount": {
+          "name": "price_from_amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_from_min": {
+          "name": "price_from_min",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_from_max": {
+          "name": "price_from_max",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_from_display_text": {
+          "name": "price_from_display_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_note": {
+          "name": "price_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "master_ids_json": {
+          "name": "master_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "service_categories_legacy_id_unique": {
+          "name": "service_categories_legacy_id_unique",
+          "columns": [
+            "legacy_id"
+          ],
+          "isUnique": true
+        },
+        "service_categories_active_sort_idx": {
+          "name": "service_categories_active_sort_idx",
+          "columns": [
+            "is_active",
+            "sort_order"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "service_categories_price_from_type_check": {
+          "name": "service_categories_price_from_type_check",
+          "value": "\"service_categories\".\"price_from_type\" IN ('fixed', 'from', 'range', 'free', 'custom')"
+        },
+        "service_categories_master_ids_json_check": {
+          "name": "service_categories_master_ids_json_check",
+          "value": "json_valid(\"service_categories\".\"master_ids_json\")"
+        },
+        "service_categories_is_active_check": {
+          "name": "service_categories_is_active_check",
+          "value": "\"service_categories\".\"is_active\" IN (0, 1)"
+        },
+        "service_categories_price_range_check": {
+          "name": "service_categories_price_range_check",
+          "value": "\"service_categories\".\"price_from_min\" IS NULL OR \"service_categories\".\"price_from_max\" IS NULL OR \"service_categories\".\"price_from_max\" >= \"service_categories\".\"price_from_min\""
+        }
+      }
+    },
+    "services": {
+      "name": "services",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "legacy_id": {
+          "name": "legacy_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "pricing_type": {
+          "name": "pricing_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price_amount": {
+          "name": "price_amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_min": {
+          "name": "price_min",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_max": {
+          "name": "price_max",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_tiers_json": {
+          "name": "price_tiers_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "price_display_text": {
+          "name": "price_display_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_text": {
+          "name": "duration_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_min_minutes": {
+          "name": "duration_min_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_max_minutes": {
+          "name": "duration_max_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "services_category_legacy_id_unique": {
+          "name": "services_category_legacy_id_unique",
+          "columns": [
+            "category_id",
+            "legacy_id"
+          ],
+          "isUnique": true
+        },
+        "services_category_active_sort_idx": {
+          "name": "services_category_active_sort_idx",
+          "columns": [
+            "category_id",
+            "is_active",
+            "sort_order"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "services_category_id_service_categories_id_fk": {
+          "name": "services_category_id_service_categories_id_fk",
+          "tableFrom": "services",
+          "tableTo": "service_categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "services_pricing_type_check": {
+          "name": "services_pricing_type_check",
+          "value": "\"services\".\"pricing_type\" IN ('fixed', 'from', 'range', 'tiers', 'free', 'custom')"
+        },
+        "services_price_tiers_json_check": {
+          "name": "services_price_tiers_json_check",
+          "value": "json_valid(\"services\".\"price_tiers_json\")"
+        },
+        "services_is_active_check": {
+          "name": "services_is_active_check",
+          "value": "\"services\".\"is_active\" IN (0, 1)"
+        },
+        "services_price_values_check": {
+          "name": "services_price_values_check",
+          "value": "(\n        (\"services\".\"pricing_type\" IN ('fixed', 'from') AND \"services\".\"price_amount\" IS NOT NULL AND \"services\".\"price_amount\" >= 0)\n        OR (\"services\".\"pricing_type\" = 'range' AND \"services\".\"price_min\" IS NOT NULL AND \"services\".\"price_max\" IS NOT NULL AND \"services\".\"price_min\" >= 0 AND \"services\".\"price_max\" >= \"services\".\"price_min\")\n        OR (\"services\".\"pricing_type\" = 'tiers' AND json_array_length(\"services\".\"price_tiers_json\") > 0)\n        OR (\"services\".\"pricing_type\" = 'free' AND COALESCE(\"services\".\"price_amount\", 0) = 0)\n        OR \"services\".\"pricing_type\" = 'custom'\n      )"
+        },
+        "services_duration_range_check": {
+          "name": "services_duration_range_check",
+          "value": "\"services\".\"duration_min_minutes\" IS NULL OR \"services\".\"duration_max_minutes\" IS NULL OR \"services\".\"duration_max_minutes\" >= \"services\".\"duration_min_minutes\""
+        }
+      }
+    },
+    "working_hours": {
+      "name": "working_hours",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "weekday": {
+          "name": "weekday",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "specific_date": {
+          "name": "specific_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_closed": {
+          "name": "is_closed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "opens_at": {
+          "name": "opens_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "closes_at": {
+          "name": "closes_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "working_hours_recurring_weekday_unique": {
+          "name": "working_hours_recurring_weekday_unique",
+          "columns": [
+            "weekday"
+          ],
+          "isUnique": true,
+          "where": "\"working_hours\".\"specific_date\" IS NULL"
+        },
+        "working_hours_specific_date_unique": {
+          "name": "working_hours_specific_date_unique",
+          "columns": [
+            "specific_date"
+          ],
+          "isUnique": true,
+          "where": "\"working_hours\".\"specific_date\" IS NOT NULL"
+        },
+        "working_hours_weekday_date_active_idx": {
+          "name": "working_hours_weekday_date_active_idx",
+          "columns": [
+            "weekday",
+            "specific_date",
+            "is_active"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "working_hours_schedule_kind_check": {
+          "name": "working_hours_schedule_kind_check",
+          "value": "(\n        (\"working_hours\".\"weekday\" BETWEEN 1 AND 7 AND \"working_hours\".\"specific_date\" IS NULL)\n        OR (\"working_hours\".\"weekday\" IS NULL AND \"working_hours\".\"specific_date\" IS NOT NULL)\n      )"
+        },
+        "working_hours_is_closed_check": {
+          "name": "working_hours_is_closed_check",
+          "value": "\"working_hours\".\"is_closed\" IN (0, 1)"
+        },
+        "working_hours_is_active_check": {
+          "name": "working_hours_is_active_check",
+          "value": "\"working_hours\".\"is_active\" IN (0, 1)"
+        },
+        "working_hours_time_required_check": {
+          "name": "working_hours_time_required_check",
+          "value": "\"working_hours\".\"is_closed\" = 1 OR (\"working_hours\".\"opens_at\" IS NOT NULL AND \"working_hours\".\"closes_at\" IS NOT NULL)"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

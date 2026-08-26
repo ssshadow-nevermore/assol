@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
-import { DIKIDI_URL } from "../dikidi";
+import { getSiteData } from "../site-data";
 
-export default function BookingRedirect() {
-  redirect(DIKIDI_URL);
+export default async function BookingRedirect() {
+  const siteData = await getSiteData();
+  redirect(siteData.links.dikidi_widget.url);
 }
