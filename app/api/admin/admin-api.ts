@@ -56,6 +56,25 @@ const tableByResource: Record<AdminResource, string> = {
   masters: "masters",
 };
 
+// These links are part of the public page contract.  They are intentionally
+// not exposed in the visual contacts editor, and the API must not allow an
+// authenticated caller to hide, delete, or rename them into a broken state.
+// Otherwise the server-rendered public page would fail while looking up the
+// required booking, review, map, and contact URLs.
+const REQUIRED_EXTERNAL_LINK_KEYS = new Set([
+  "phone",
+  "max",
+  "email",
+  "vk",
+  "dikidi_widget",
+  "dikidi_script",
+  "yandex_maps",
+  "yandex_reviews",
+  "yandex_reviews_widget",
+  "yandex_map_widget_desktop",
+  "yandex_map_widget_mobile",
+]);
+
 const columnsByResource: Record<AdminResource, readonly string[]> = {
   service_categories: ["id", "legacy_id", "number", "title", "short_title", "description", "price_from_type", "price_from_amount", "price_from_min", "price_from_max", "price_from_display_text", "price_note", "master_ids_json", "is_active", "sort_order"],
   services: ["id", "category_id", "legacy_id", "name", "note", "pricing_type", "price_amount", "price_min", "price_max", "price_tiers_json", "price_display_text", "duration_text", "duration_min_minutes", "duration_max_minutes", "is_active", "sort_order"],
@@ -384,6 +403,21 @@ async function requireForeignKeys(database: SqliteDatabase, resource: AdminResou
   }
 }
 
+function assertRequiredExternalLinkMutation(resource: AdminResource, existing: JsonRecord | null, input: JsonRecord, operation: "update" | "hide" | "delete"): void {
+  if (resource !== "external_links" || !existing) return;
+  const currentKey = String(existing.link_key ?? "");
+  if (!REQUIRED_EXTERNAL_LINK_KEYS.has(currentKey)) return;
+  if (operation === "hide" || operation === "delete") {
+    throw new AdminApiError("Системную ссылку нельзя скрыть или удалить");
+  }
+  if (input.link_key !== undefined && String(input.link_key).trim() !== currentKey) {
+    throw new AdminApiError("Системную ссылку нельзя переименовать");
+  }
+  if (input.is_active !== undefined && Number(input.is_active) === 0) {
+    throw new AdminApiError("Системную ссылку нельзя скрыть");
+  }
+}
+
 export async function listResource(resource: AdminResource): Promise<JsonRecord[]> {
   const database = await databaseOrThrow();
   const table = tableByResource[resource];
@@ -416,6 +450,7 @@ export async function updateResource(resource: AdminResource, id: string, input:
   const existing = await rowById(database, resource, resource === "salon_settings" ? Number(id) : id);
   if (!existing) throw new AdminApiError("Запись не найдена", 404);
   if (typeof existing.id !== "string" && typeof existing.id !== "number") throw new AdminApiError("Некорректный id записи", 500);
+  assertRequiredExternalLinkMutation(resource, existing, input, "update");
   const existingId = existing.id;
   const record = normalize(resource, { ...input, id: existingId }, existing);
   await requireForeignKeys(database, resource, record);
@@ -431,6 +466,7 @@ export async function hideResource(resource: AdminResource, id: string): Promise
   if (resource === "salon_settings") throw new AdminApiError("Контакты нельзя скрыть: отредактируйте запись вместо удаления");
   const existing = await rowById(database, resource, id);
   if (!existing) throw new AdminApiError("Запись не найдена", 404);
+  assertRequiredExternalLinkMutation(resource, existing, {}, "hide");
   const table = tableByResource[resource];
   if (resource === "offers") {
     await database.prepare(`UPDATE ${table} SET status = 'hidden', updated_at = CURRENT_TIMESTAMP WHERE id = ?`).bind(id).run();
@@ -447,6 +483,7 @@ export async function deleteResource(resource: AdminResource, id: string): Promi
   if (resource === "salon_settings") throw new AdminApiError("Контакты нельзя удалить");
   const existing = await rowById(database, resource, id);
   if (!existing) throw new AdminApiError("Запись не найдена", 404);
+  assertRequiredExternalLinkMutation(resource, existing, {}, "delete");
   try {
     await database.prepare(`DELETE FROM ${tableByResource[resource]} WHERE id = ?`).bind(id).run();
   } catch (error) {

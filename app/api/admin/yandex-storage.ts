@@ -166,9 +166,9 @@ export async function deleteYandexObject(env: Partial<Env> | undefined, key: str
   if (!response.ok && response.status !== 404) throw new YandexStorageError(`Yandex Object Storage delete failed (${response.status})`);
 }
 
-export async function getYandexObject(env: Partial<Env> | undefined, key: string): Promise<Response> {
+export async function getYandexObject(env: Partial<Env> | undefined, key: string, timeoutMs = 15000): Promise<Response> {
   try {
-    return await fetch(await signedRequest(configFromEnv(env), "GET", key, undefined, "application/octet-stream"));
+    return await fetchWithTimeout(await signedRequest(configFromEnv(env), "GET", key, undefined, "application/octet-stream"), timeoutMs);
   } catch (error) {
     throw new YandexStorageError(`Yandex Object Storage read request failed: ${error instanceof Error ? error.message : String(error)}`);
   }

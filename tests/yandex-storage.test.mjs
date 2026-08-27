@@ -51,3 +51,15 @@ test("put, read and delete use signed server-side requests", async () => {
     globalThis.fetch = originalFetch;
   }
 });
+
+test("read aborts stalled storage requests instead of hanging forever", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (_request, init) => new Promise((_, reject) => {
+    init?.signal?.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
+  });
+  try {
+    await assert.rejects(() => storage.getYandexObject(env, key, 5), /read request failed: aborted/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

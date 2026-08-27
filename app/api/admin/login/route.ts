@@ -28,6 +28,9 @@ export async function POST(request: Request): Promise<Response> {
     response.headers.set("Cache-Control", "no-store");
     return response;
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return Response.json({ error: "Неверный логин или пароль" }, { status: 401, headers: noStore() });
+    }
     console.error(JSON.stringify({ message: "Admin login failed", error: error instanceof Error ? error.message : String(error) }));
     return Response.json({ error: "Авторизация временно недоступна" }, { status: 503, headers: noStore() });
   }

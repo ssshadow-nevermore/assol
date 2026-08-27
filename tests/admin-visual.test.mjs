@@ -269,6 +269,21 @@ test("public page is dynamic so D1 edits appear without a restart", () => {
   assert.match(pageSource, /export const revalidate = 0/);
 });
 
+test("public contract links cannot be hidden, deleted, or renamed through CRUD", async () => {
+  const adminApiSource = await readFile(new URL("../app/api/admin/admin-api.ts", import.meta.url), "utf8");
+  assert.match(adminApiSource, /REQUIRED_EXTERNAL_LINK_KEYS/);
+  assert.match(adminApiSource, /assertRequiredExternalLinkMutation\(resource, existing, input, "update"\)/);
+  assert.match(adminApiSource, /assertRequiredExternalLinkMutation\(resource, existing, \{\}, "hide"\)/);
+  assert.match(adminApiSource, /assertRequiredExternalLinkMutation\(resource, existing, \{\}, "delete"\)/);
+});
+
+test("malformed login JSON returns the generic authentication error", async () => {
+  const loginSource = await readFile(new URL("../app/api/admin/login/route.ts", import.meta.url), "utf8");
+  assert.match(loginSource, /error instanceof SyntaxError/);
+  assert.match(loginSource, /Неверный логин или пароль/);
+  assert.match(loginSource, /status: 401/);
+});
+
 test("service directions keep the same text in an animated marquee", () => {
   assert.match(pageSource, /className="marquee-track"/);
   assert.match(pageSource, /<i aria-hidden="true">✦<\/i><b>\{direction\}<\/b>/);
