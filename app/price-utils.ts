@@ -79,10 +79,12 @@ export function formatCategoryPriceFromServices(
 ): string {
   const numericPrices = services
     .map((service) => getMinimumNumericPrice(service))
-    .filter((price): price is number => price !== null);
+    // Free services remain visible in the catalog, but must not make a
+    // category look free when it also contains paid services.
+    .filter((price): price is number => price !== null && price > 0);
   if (numericPrices.length > 0) {
     const minimum = Math.min(...numericPrices);
-    return minimum === 0 ? "Бесплатно" : `от ${formatPriceNumber(minimum)} ₽`;
+    return `от ${formatPriceNumber(minimum)} ₽`;
   }
   return formatStoredCategoryPrice(category);
 }

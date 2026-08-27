@@ -151,6 +151,8 @@ test("category headline price is the minimum numeric active service price", asyn
   assert.equal(getMinimumNumericPrice({ pricing_type: "fixed", price_amount: 500 }), 500);
   assert.equal(getMinimumNumericPrice(tiers), 900);
   assert.equal(formatCategoryPriceFromServices({}, [{ pricing_type: "custom", price_display_text: "Цена по запросу" }, { pricing_type: "fixed", price_amount: 900 }, tiers]), "от 900 ₽");
+  assert.equal(formatCategoryPriceFromServices({}, [{ pricing_type: "free", price_amount: 0 }, { pricing_type: "fixed", price_amount: 500 }]), "от 500 ₽");
+  assert.equal(formatCategoryPriceFromServices({}, [{ pricing_type: "free", price_amount: 0 }]), "Цена по запросу");
   assert.equal(formatCategoryPriceFromServices({}, [{ pricing_type: "custom", price_display_text: "Цена по запросу" }]), "Цена по запросу");
   assert.equal(formatCategoryPriceFromServices({}, []), "Цена по запросу");
 });
