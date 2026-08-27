@@ -9,6 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "node dist/standalone/server.js",
+    "start:local-prod": "node scripts/start-local-prod.mjs",
     "db:init": "node scripts/init-sqlite.mjs",
     "db:backup": "node scripts/backup-sqlite.mjs",
     "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/yandex-storage.test.mjs tests/media-validation.test.mjs tests/media-client.test.mjs tests/admin-visual.test.mjs tests/admin-access.test.mjs tests/masters.test.mjs tests/map-link.test.mjs tests/working-hours-validation.test.mjs",
