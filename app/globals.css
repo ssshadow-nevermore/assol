@@ -558,7 +558,10 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 
 @media(max-width:760px) {
   .admin-offer-media-grid { grid-template-columns:1fr; }
-  .admin-visual-page { width:100vw; max-width:100vw; padding:30px 16px 70px; overflow-x:hidden; }
+  /* Use the containing block width on small screens. 100vw includes the
+     vertical scrollbar and can create a horizontal page overflow on the
+     login/admin surface. */
+  .admin-visual-page { width:100%; max-width:100%; padding:30px 16px 70px; overflow-x:hidden; }
   .admin-visual-header { display:block; margin-bottom:38px; }
   .admin-visual-header>div:first-child { width:100%; min-width:0; }
   .admin-visual-header p:not(.admin-kicker) { display:block; width:100%; max-width:calc(100vw - 32px); white-space:normal; overflow-wrap:anywhere; word-break:break-word; }
