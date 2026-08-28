@@ -81,7 +81,7 @@ export default async function Home() {
             <a className="hero-proof" href={reviewUrl} target="_blank" rel="noreferrer"><span className="stars">★★★★★</span><span>Актуальные отзывы на Яндекс Картах</span><strong>↗</strong></a>
           </div>
           <div className="hero-visual" aria-label="Результат работы мастера салона">
-            <Image src="/images/hero-bob.webp" alt="Женская стрижка боб, выполненная мастером салона Ассоль" width={1200} height={1200} priority sizes="(max-width: 720px) calc(100vw - 36px), 48vw" />
+            <Image src="/images/hero-bob.webp" alt="Женская стрижка боб, выполненная мастером салона Ассоль" width={1200} height={1200} fetchPriority="high" sizes="(max-width: 720px) calc(100vw - 36px), 48vw" />
             <div className="hero-note"><p>Бережно к волосам.<br />Точно к вашему образу.</p></div>
           </div>
           <p className="hero-address">{salon.city} · {salon.streetAddress}</p>

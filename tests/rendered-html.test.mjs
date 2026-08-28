@@ -133,7 +133,7 @@ test("managed benefit images bypass the VINEXT image optimizer", async () => {
   const response = await render("/");
   const html = await response.text();
   assert.doesNotMatch(html, /\/_next\/image\?url=%2Fmedia%2F/i);
-  assert.match(html, /src="\/media\/media\/offers\/[^\"]+\.(?:jpg|png|webp)"/i);
+  assert.match(html, /src="\/media\/media\/offers\/[^"]+\.(?:jpg|png|webp)"/i);
 });
 
 test("certificate prices are calculated for ranges, from-prices and zero results", async () => {

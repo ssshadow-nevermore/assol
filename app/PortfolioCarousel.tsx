@@ -55,7 +55,7 @@ export default function PortfolioCarousel({ works, bookingUrl }: PortfolioCarous
           {works.map((work, index) => (
             <figure className="work" key={work.id} aria-hidden={index !== currentIndex}>
               <div className="work-media">
-                <Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 52vw" priority={index === 0} />
+                <Image src={work.src} alt={work.alt} width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 52vw" />
               </div>
               <figcaption>
                 <span className="work-kicker">Реальная работа</span>
