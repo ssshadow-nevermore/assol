@@ -3,3 +3,7 @@ export function resolveMediaUrl(imageUrl: string | null, storageKey: string | nu
   if (!storageKey) return "";
   return `/media/${storageKey.split("/").map((part) => encodeURIComponent(part)).join("/")}`;
 }
+
+export function shouldBypassImageOptimizer(src: string): boolean {
+  return src.startsWith("/media/");
+}

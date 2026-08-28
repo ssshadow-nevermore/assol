@@ -4,6 +4,7 @@ import BenefitsShowcase from "./BenefitsShowcase";
 import FooterContacts from "./FooterContacts";
 import PortfolioCarousel from "./PortfolioCarousel";
 import ServiceBenefitPrice from "./ServiceBenefitPrice";
+import { shouldBypassImageOptimizer } from "./media-url";
 import { getSiteData } from "./site-data";
 
 // Team photos can come from either a legacy /images path or Object Storage
@@ -59,7 +60,7 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <header className="header">
         <a className="brand" href="#top" aria-label="Ассоль — на главную">
-          <Image className="brand-logo" src={salon.logoUrl} alt={salon.name} width={1159} height={235} priority />
+          <Image className="brand-logo" src={salon.logoUrl} alt={salon.name} width={1159} height={235} priority unoptimized={shouldBypassImageOptimizer(salon.logoUrl)} />
         </a>
         <nav aria-label="Главная навигация">
           <a href="#services">Услуги</a><a href="#works">Работы</a><a href="#team">Мастера</a><a href="#contacts">Контакты</a>
@@ -151,7 +152,7 @@ export default async function Home() {
         </section>
 
         <section className="section atmosphere">
-          <div className="atmosphere-photo"><Image src={blocks.atmosphere.imageUrl} alt="Интерьер салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 46vw" /></div>
+          <div className="atmosphere-photo"><Image src={blocks.atmosphere.imageUrl} alt="Интерьер салона красоты Ассоль" width={1080} height={1440} sizes="(max-width: 720px) calc(100vw - 36px), 46vw" unoptimized={shouldBypassImageOptimizer(blocks.atmosphere.imageUrl)} /></div>
           <div className="atmosphere-copy"><p className="eyebrow">В салоне</p><h2>Спокойно.<br /><em>Уютно. По-настоящему.</em></h2><p>Мы рядом, нас легко найти, а внутри есть всё, чтобы вы отдохнули и доверили заботу о себе профессионалам.</p><ul><li>Оплата картой</li><li>Парковка рядом</li><li>Wi-Fi</li><li>Доступная среда</li></ul></div>
         </section>
 

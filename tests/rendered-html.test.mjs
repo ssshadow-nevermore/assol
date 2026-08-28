@@ -121,14 +121,34 @@ test("custom booking form and email endpoint are removed", async () => {
   await assert.rejects(access(new URL("../app/booking/booking-message.mjs", import.meta.url)));
 });
 
-test("managed benefit images bypass the VINEXT image optimizer", async () => {
-  const source = await readFile(new URL("../app/BenefitsShowcase.tsx", import.meta.url), "utf8");
+test("all database-backed images bypass the VINEXT image optimizer", async () => {
+  const [benefits, portfolio, page, mediaSource] = await Promise.all([
+    readFile(new URL("../app/BenefitsShowcase.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/PortfolioCarousel.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/media-url.ts", import.meta.url), "utf8"),
+  ]);
+  const { resolveMediaUrl, shouldBypassImageOptimizer } = await loadTypeScriptModule("../app/media-url.ts");
+  const newPortfolioUrl = resolveMediaUrl(null, "media/portfolio_items/new-item/01234567-89ab-cdef-0123-456789abcdef.jpg");
 
-  assert.ok(source.includes('const shouldBypassImageOptimizer = (src: string) => src.startsWith("/media/");'));
-  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(front\)\}/g) ?? []).length, 2);
-  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(back\)\}/g) ?? []).length, 1);
-  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(offer\.frontUrl\)\}/g) ?? []).length, 1);
-  assert.doesNotMatch(source, /unoptimized=\{true\}/);
+  assert.match(mediaSource, /export function shouldBypassImageOptimizer\(src: string\): boolean/);
+  assert.equal(newPortfolioUrl, "/media/media/portfolio_items/new-item/01234567-89ab-cdef-0123-456789abcdef.jpg");
+  assert.equal(shouldBypassImageOptimizer(newPortfolioUrl), true);
+  assert.equal(shouldBypassImageOptimizer("/images/hero-bob.webp"), false);
+
+  assert.ok(benefits.includes('import { shouldBypassImageOptimizer } from "./media-url";'));
+  assert.doesNotMatch(benefits, /const shouldBypassImageOptimizer/);
+  assert.equal((benefits.match(/unoptimized=\{shouldBypassImageOptimizer\(front\)\}/g) ?? []).length, 2);
+  assert.equal((benefits.match(/unoptimized=\{shouldBypassImageOptimizer\(back\)\}/g) ?? []).length, 1);
+  assert.equal((benefits.match(/unoptimized=\{shouldBypassImageOptimizer\(offer\.frontUrl\)\}/g) ?? []).length, 1);
+  assert.doesNotMatch(benefits, /unoptimized=\{true\}/);
+
+  assert.match(portfolio, /unoptimized=\{shouldBypassImageOptimizer\(work\.src\)\}/);
+  assert.match(page, /src=\{salon\.logoUrl\}[^>]*unoptimized=\{shouldBypassImageOptimizer\(salon\.logoUrl\)\}/);
+  assert.match(page, /src=\{blocks\.atmosphere\.imageUrl\}[^>]*unoptimized=\{shouldBypassImageOptimizer\(blocks\.atmosphere\.imageUrl\)\}/);
+  const heroImage = page.match(/<Image src="\/images\/hero-bob\.webp"[^>]+\/>/)?.[0] ?? "";
+  assert.match(heroImage, /fetchPriority="high"/);
+  assert.doesNotMatch(heroImage, /unoptimized/);
 
   const response = await render("/");
   const html = await response.text();

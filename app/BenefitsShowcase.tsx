@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { shouldBypassImageOptimizer } from "./media-url";
 import type { SiteOffer } from "./site-data-types";
 
 type FlipCardProps = {
@@ -13,8 +14,6 @@ type FlipCardProps = {
   label: string;
   enabled?: boolean;
 };
-
-const shouldBypassImageOptimizer = (src: string) => src.startsWith("/media/");
 
 function FlipCard({ className, front, back, frontAlt, backAlt, label, enabled = true }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
