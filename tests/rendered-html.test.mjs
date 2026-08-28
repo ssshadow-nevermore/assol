@@ -231,9 +231,17 @@ test("video media route preserves byte ranges for WebKit playback", async () => 
   assert.match(route, /status: 206/);
   assert.match(video, /playsInline/);
   assert.match(video, /muted/);
+  assert.match(video, /autoPlay/);
+  assert.match(video, /loop/);
   assert.match(video, /controls/);
+  assert.match(video, /preload="metadata"/);
+  assert.match(video, /key=\{videoSrc\}/);
   assert.match(video, /good-place-2026-safari/);
   assert.match(video, /onError/);
+  assert.match(video, /setVideoSrc\(SAFARI_FALLBACK_VIDEO\)/);
+  assert.doesNotMatch(video, /\.load\(\)/);
+  assert.doesNotMatch(video, /video\.src\s*=/);
+  assert.match(video, /matchMedia\("\(prefers-reduced-motion: reduce\)"\)/);
 });
 
 test("manicure and pedicure discounts only appear on services named accordingly", async () => {

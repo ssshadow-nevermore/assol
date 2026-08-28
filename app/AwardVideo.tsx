@@ -19,20 +19,7 @@ export default function AwardVideo({ src = "/media/good-place-2026.mp4" }: { src
 
   const switchToFallback = useCallback(() => {
     if (videoSrc === SAFARI_FALLBACK_VIDEO) return;
-    const video = videoRef.current;
     setVideoSrc(SAFARI_FALLBACK_VIDEO);
-    if (video) {
-      video.src = SAFARI_FALLBACK_VIDEO;
-      video.load();
-      void video.play().catch(() => undefined);
-    }
-  }, [videoSrc]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.load();
-    void video.play().catch(() => undefined);
   }, [videoSrc]);
 
   useEffect(() => {
@@ -55,15 +42,16 @@ export default function AwardVideo({ src = "/media/good-place-2026.mp4" }: { src
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncPlayback = () => {
-      if (!videoRef.current) return;
-      if (media.matches) videoRef.current.pause();
-      else void videoRef.current.play().catch(() => undefined);
+      const video = videoRef.current;
+      if (!video) return;
+      if (media.matches) video.pause();
+      else void video.play().catch(() => undefined);
     };
 
     syncPlayback();
     media.addEventListener("change", syncPlayback);
     return () => media.removeEventListener("change", syncPlayback);
-  }, []);
+  }, [videoSrc]);
 
   return (
     <video
