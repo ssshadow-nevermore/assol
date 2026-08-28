@@ -121,6 +121,21 @@ test("custom booking form and email endpoint are removed", async () => {
   await assert.rejects(access(new URL("../app/booking/booking-message.mjs", import.meta.url)));
 });
 
+test("managed benefit images bypass the VINEXT image optimizer", async () => {
+  const source = await readFile(new URL("../app/BenefitsShowcase.tsx", import.meta.url), "utf8");
+
+  assert.ok(source.includes('const shouldBypassImageOptimizer = (src: string) => src.startsWith("/media/");'));
+  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(front\)\}/g) ?? []).length, 2);
+  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(back\)\}/g) ?? []).length, 1);
+  assert.equal((source.match(/unoptimized=\{shouldBypassImageOptimizer\(offer\.frontUrl\)\}/g) ?? []).length, 1);
+  assert.doesNotMatch(source, /unoptimized=\{true\}/);
+
+  const response = await render("/");
+  const html = await response.text();
+  assert.doesNotMatch(html, /\/_next\/image\?url=%2Fmedia%2F/i);
+  assert.match(html, /src="\/media\/media\/offers\/[^\"]+\.(?:jpg|png|webp)"/i);
+});
+
 test("certificate prices are calculated for ranges, from-prices and zero results", async () => {
   const { applyDiscountToPriceLabel } = await loadTypeScriptModule("../app/price-utils.ts");
 

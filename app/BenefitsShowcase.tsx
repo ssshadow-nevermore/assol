@@ -14,6 +14,8 @@ type FlipCardProps = {
   enabled?: boolean;
 };
 
+const shouldBypassImageOptimizer = (src: string) => src.startsWith("/media/");
+
 function FlipCard({ className, front, back, frontAlt, backAlt, label, enabled = true }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
   const canFlip = enabled && Boolean(back);
@@ -22,7 +24,7 @@ function FlipCard({ className, front, back, frontAlt, backAlt, label, enabled = 
   useEffect(() => { if (!canFlip) setFlipped(false); }, [canFlip]);
 
   if (!canFlip) {
-    return <span className={`flip-card ${className} flip-card--static`}><span className="flip-card-inner"><span className="flip-card-face flip-card-front"><Image src={front} alt={frontAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" /></span></span></span>;
+    return <span className={`flip-card ${className} flip-card--static`}><span className="flip-card-inner"><span className="flip-card-face flip-card-front"><Image src={front} alt={frontAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" unoptimized={shouldBypassImageOptimizer(front)} /></span></span></span>;
   }
 
   return (
@@ -35,11 +37,11 @@ function FlipCard({ className, front, back, frontAlt, backAlt, label, enabled = 
     >
       <span className="flip-card-inner">
         <span className="flip-card-face flip-card-front">
-          <Image src={front} alt={frontAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" />
+          <Image src={front} alt={frontAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" unoptimized={shouldBypassImageOptimizer(front)} />
           <span className="flip-card-hint">Нажмите или наведите, чтобы перевернуть</span>
         </span>
         <span className="flip-card-face flip-card-back">
-          <Image src={back} alt={backAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" />
+          <Image src={back} alt={backAlt} width={1600} height={1200} sizes="(max-width: 720px) calc(100vw - 72px), 38vw" unoptimized={shouldBypassImageOptimizer(back)} />
         </span>
       </span>
     </button>
@@ -118,7 +120,7 @@ function OfferCarousel({ offers }: { offers: SiteOffer[] }) {
       <div className="benefit-extra-track" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {offers.map((offer) => <div className={`benefit-offer-slide benefit-offer-slide--${offer.type}`} key={offer.id}>
           {offer.type === "loyalty" || offer.type === "certificate" ? <FeatureOfferCard offer={offer} /> : <article className="benefit-extra-card">
-            {offer.frontUrl && (offer.flipEnabled && offer.backUrl ? <FlipCard className="flip-card--extra" front={offer.frontUrl} back={offer.backUrl} frontAlt={offer.title} backAlt={`${offer.title}: условия`} label={offer.title} enabled /> : <Image src={offer.frontUrl} alt={offer.title} width={1200} height={800} sizes="(max-width: 720px) calc(100vw - 36px), 46vw" />)}
+            {offer.frontUrl && (offer.flipEnabled && offer.backUrl ? <FlipCard className="flip-card--extra" front={offer.frontUrl} back={offer.backUrl} frontAlt={offer.title} backAlt={`${offer.title}: условия`} label={offer.title} enabled /> : <Image src={offer.frontUrl} alt={offer.title} width={1200} height={800} sizes="(max-width: 720px) calc(100vw - 36px), 46vw" unoptimized={shouldBypassImageOptimizer(offer.frontUrl)} />)}
             <div><span className="benefit-kicker">{offer.shortTitle || offer.eyebrow || "Предложение"}</span><h4>{offer.title}</h4><p>{offer.description}</p><strong>{offer.eyebrow || "Уточните условия у администратора"}</strong></div>
           </article>}
         </div>)}
