@@ -10,7 +10,16 @@ export const metadata: Metadata = {
   openGraph: { title: "Ассоль — салон красоты в Пушкино", description: "Красота, в которой вы — это вы. Услуги, цены и онлайн-запись.", locale: "ru_RU", type: "website", images: [{ url: "/og.png", width: 1200, height: 630, alt: "Ассоль — салон красоты в Пушкино" }] },
   twitter: { card: "summary_large_image", title: "Ассоль — салон красоты в Пушкино", description: "Красота, в которой вы — это вы.", images: ["/og.png"] },
   alternates: { canonical: "/" },
-  icons: { icon: "/favicon.svg" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const dynamic = "force-dynamic";
