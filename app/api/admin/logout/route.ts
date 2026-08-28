@@ -2,11 +2,12 @@ import { invalidateAdminSession, isSameOriginRequest, clearSessionCookie } from 
 import { getAuthRuntime } from "../auth-runtime";
 
 export async function POST(request: Request): Promise<Response> {
-  if (!isSameOriginRequest(request)) {
-    return Response.json({ error: "Недопустимый источник запроса" }, { status: 403, headers: { "Cache-Control": "no-store" } });
-  }
   try {
-    await invalidateAdminSession(request, await getAuthRuntime());
+    const runtime = await getAuthRuntime();
+    if (!isSameOriginRequest(request, runtime)) {
+      return Response.json({ error: "Недопустимый источник запроса" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+    }
+    await invalidateAdminSession(request, runtime);
     return Response.json({ ok: true }, {
       headers: { "Cache-Control": "no-store", "Set-Cookie": clearSessionCookie(request) },
     });

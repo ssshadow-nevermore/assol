@@ -54,6 +54,7 @@ function sqliteStore(): AdminSessionStore {
 function fromEnv(source: Record<string, string>): Partial<AdminAuthRuntime> {
   return {
     ADMIN_DEV_BYPASS: source.ADMIN_DEV_BYPASS,
+    ADMIN_PUBLIC_ORIGIN: source.ADMIN_PUBLIC_ORIGIN,
     ADMIN_OWNER_LOGIN: source.ADMIN_OWNER_LOGIN,
     ADMIN_OWNER_PASSWORD_VERIFIER: source.ADMIN_OWNER_PASSWORD_VERIFIER,
     ADMIN_DEVELOPER_LOGIN: source.ADMIN_DEVELOPER_LOGIN,

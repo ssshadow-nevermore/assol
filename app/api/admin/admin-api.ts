@@ -129,12 +129,13 @@ export class AdminApiError extends Error {
 }
 
 export async function assertAdminRequest(request: Request): Promise<void> {
-  const result = await requireAdminSession(request, await getAuthRuntime());
+  const runtime = await getAuthRuntime();
+  const result = await requireAdminSession(request, runtime);
   if (!result.ok) {
     const payload = await result.response.json() as { error?: string };
     throw new AdminApiError(payload.error ?? "Требуется авторизация", result.response.status);
   }
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginRequest(request)) {
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginRequest(request, runtime)) {
     throw new AdminApiError("Недопустимый источник запроса", 403);
   }
 }

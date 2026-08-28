@@ -50,6 +50,7 @@ export interface AdminRateLimiter {
 
 export type AdminAuthRuntime = {
   ADMIN_DEV_BYPASS?: string;
+  ADMIN_PUBLIC_ORIGIN?: string;
   ADMIN_OWNER_LOGIN?: string;
   ADMIN_OWNER_PASSWORD_VERIFIER?: string;
   ADMIN_DEVELOPER_LOGIN?: string;
@@ -302,8 +303,21 @@ function resetLocalLoginRateLimit(request: Request, login: string): void {
   loginAttempts.delete(requestClientKey(request, login));
 }
 
-export function isSameOriginRequest(request: Request): boolean {
-  const expectedOrigin = new URL(request.url).origin;
+export function isSameOriginRequest(request: Request, runtime?: Partial<AdminAuthRuntime>): boolean {
+  const configuredOrigin = runtime?.ADMIN_PUBLIC_ORIGIN;
+  let expectedOrigin: string;
+  if (configuredOrigin !== undefined) {
+    if (typeof configuredOrigin !== "string" || !configuredOrigin.trim()) return false;
+    try {
+      const parsed = new URL(configuredOrigin.trim());
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+      expectedOrigin = parsed.origin;
+    } catch {
+      return false;
+    }
+  } else {
+    expectedOrigin = new URL(request.url).origin;
+  }
   const origin = request.headers.get("origin");
   if (origin) return origin === expectedOrigin;
   const referer = request.headers.get("referer");
@@ -383,6 +397,6 @@ export async function authenticateLogin(request: Request, login: string, passwor
 export async function assertAdminSession(request: Request, suppliedEnv?: Partial<AdminAuthRuntime>): Promise<AdminIdentity> {
   const result = await requireAdminSession(request, suppliedEnv);
   if (!result.ok) throw new Error("ADMIN_AUTH_REQUIRED");
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginRequest(request)) throw new Error("ADMIN_CSRF_REJECTED");
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginRequest(request, suppliedEnv)) throw new Error("ADMIN_CSRF_REJECTED");
   return result.identity;
 }

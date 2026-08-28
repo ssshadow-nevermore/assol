@@ -88,6 +88,13 @@ test("state-changing requests require same origin", () => {
   assert.equal(isSameOriginRequest(new Request("https://example.test/api/admin", { method: "POST", headers: { Origin: "https://evil.test" } })), false);
   assert.equal(isSameOriginRequest(new Request("https://example.test/api/admin", { method: "POST", headers: { Referer: "https://example.test/admin" } })), true);
   assert.equal(isSameOriginRequest(new Request("https://example.test/api/admin", { method: "POST" })), false);
+
+  const proxyRuntime = { ADMIN_PUBLIC_ORIGIN: "https://assolkrasota.ru" };
+  assert.equal(isSameOriginRequest(new Request("http://assolkrasota.ru/api/admin", { method: "POST", headers: { Origin: "https://assolkrasota.ru" } }), proxyRuntime), true);
+  assert.equal(isSameOriginRequest(new Request("http://assolkrasota.ru/api/admin", { method: "POST", headers: { Origin: "https://evil.test" } }), proxyRuntime), false);
+  assert.equal(isSameOriginRequest(new Request("http://assolkrasota.ru/api/admin", { method: "POST", headers: { Referer: "https://assolkrasota.ru/admin" } }), proxyRuntime), true);
+  assert.equal(isSameOriginRequest(new Request("http://assolkrasota.ru/api/admin", { method: "POST", headers: { Origin: "https://assolkrasota.ru" } }), { ADMIN_PUBLIC_ORIGIN: "not a URL" }), false);
+  assert.equal(isSameOriginRequest(new Request("http://assolkrasota.ru/api/admin", { method: "POST", headers: { Origin: "https://assolkrasota.ru" } }), { ADMIN_PUBLIC_ORIGIN: "ftp://assolkrasota.ru" }), false);
 });
 
 function mockDatabase() {

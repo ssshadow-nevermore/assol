@@ -8,10 +8,11 @@ function noStore(headers?: HeadersInit): Headers {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  if (!isSameOriginRequest(request)) {
-    return Response.json({ error: "Недопустимый источник запроса" }, { status: 403, headers: noStore() });
-  }
   try {
+    const runtime = await getAuthRuntime();
+    if (!isSameOriginRequest(request, runtime)) {
+      return Response.json({ error: "Недопустимый источник запроса" }, { status: 403, headers: noStore() });
+    }
     const body = await request.json() as unknown;
     if (!body || typeof body !== "object" || Array.isArray(body)) {
       return Response.json({ error: "Неверный логин или пароль" }, { status: 401, headers: noStore() });
@@ -24,7 +25,7 @@ export async function POST(request: Request): Promise<Response> {
     if (login.length > 256 || password.length > 4096) {
       return Response.json({ error: "Неверный логин или пароль" }, { status: 401, headers: noStore() });
     }
-    const response = await authenticateLogin(request, login, password, await getAuthRuntime());
+    const response = await authenticateLogin(request, login, password, runtime);
     response.headers.set("Cache-Control", "no-store");
     return response;
   } catch (error) {
