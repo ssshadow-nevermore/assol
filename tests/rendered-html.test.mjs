@@ -84,6 +84,28 @@ test("renders the salon landing page with DIKIDI booking links", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview|\/api\/booking/i);
 });
 
+test("production SEO metadata and structured data use the canonical domain", async () => {
+  const [layout, page] = await Promise.all([
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(layout, /metadataBase:\s*new URL\(["']https:\/\/assolkrasota\.ru["']\)/);
+  assert.doesNotMatch(layout, /assol-salon\.ru/i);
+  assert.match(page, /new URL\(salon\.logoUrl,\s*["']https:\/\/assolkrasota\.ru["']\)/);
+  assert.doesNotMatch(page, /assol-salon\.ru/i);
+
+  const html = await (await render("/")).text();
+  const canonical = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1];
+  assert.ok(canonical, "production HTML must include a canonical link");
+  assert.equal(new URL(canonical).href, "https://assolkrasota.ru/");
+
+  const structuredDataBlocks = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  assert.ok(structuredDataBlocks.length >= 1, "production HTML must include JSON-LD");
+  for (const [, block] of structuredDataBlocks) assert.doesNotMatch(block, /assol-salon\.ru/i);
+  assert.doesNotMatch(html, /assol-salon\.ru/i);
+});
+
 test("legacy booking route redirects to DIKIDI", async () => {
   const response = await render("/booking");
   assert.ok([301, 302, 303, 307, 308].includes(response.status));

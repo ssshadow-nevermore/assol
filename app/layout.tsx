@@ -3,7 +3,7 @@ import "./globals.css";
 import { getSiteData } from "./site-data";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://assol-salon.ru"),
+  metadataBase: new URL("https://assolkrasota.ru"),
   title: "Салон красоты Ассоль в Пушкино — стрижки, окрашивание, маникюр",
   description: "Салон красоты Ассоль в Пушкино на Московском проспекте, 44. Стрижки, окрашивание, маникюр, педикюр, брови и депиляция. Онлайн-запись.",
   keywords: ["салон красоты Пушкино", "парикмахерская Пушкино", "маникюр Пушкино", "окрашивание волос Пушкино", "Ассоль салон красоты"],

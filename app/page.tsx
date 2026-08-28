@@ -43,7 +43,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "BeautySalon",
     name: salon.name,
-    image: new URL(salon.logoUrl, "https://assol-salon.ru").href,
+    image: new URL(salon.logoUrl, "https://assolkrasota.ru").href,
     telephone: salon.phone,
     priceRange: "₽₽",
     address: {
