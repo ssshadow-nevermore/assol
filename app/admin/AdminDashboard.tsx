@@ -16,6 +16,8 @@ type EditableResource = Exclude<Resource, "offer_service_rules" | "offer_conditi
 type Row = Record<string, unknown>;
 type Tier = { id: string; label: string; amount: number };
 type ModalResource = EditableResource | null;
+type MediaPreviewKey = "portfolio" | "front" | "back" | "atmosphere";
+type MediaPreviewUrls = Partial<Record<MediaPreviewKey, string>>;
 
 const emptyRecord: Record<EditableResource, Row> = {
   service_categories: { legacy_id: "", number: "", title: "", short_title: "", description: "", price_from_type: "from", is_active: 1 },
@@ -194,6 +196,7 @@ export default function AdminDashboard() {
   const [draft, setDraft] = useState<Row>({});
   const [tiers, setTiers] = useState<Tier[]>([]);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreviewUrls, setMediaPreviewUrls] = useState<MediaPreviewUrls>({});
   const [mediaField, setMediaField] = useState<"front" | "back">("front");
   const [siteBlocksMode, setSiteBlocksMode] = useState(false);
   const [mapEditorMode, setMapEditorMode] = useState(false);
@@ -206,10 +209,47 @@ export default function AdminDashboard() {
   const modalRef = useRef<HTMLElement>(null);
   // Keep condition edits available to the save handler even when a delete or
   // keystroke is followed immediately by Save in the same event turn.
+  const mediaPreviewUrlsRef = useRef<MediaPreviewUrls>({});
   const conditionDraftsRef = useRef<Row[]>([]);
   const operationLockRef = useRef(false);
   const operationAbortRef = useRef<AbortController | null>(null);
   const mediaSelectionRef = useRef(0);
+
+  const replaceMediaPreview = useCallback((key: MediaPreviewKey, file: File | null) => {
+    const previousUrl = mediaPreviewUrlsRef.current[key];
+    if (previousUrl) URL.revokeObjectURL(previousUrl);
+
+    if (!file) {
+      const next = { ...mediaPreviewUrlsRef.current };
+      delete next[key];
+      mediaPreviewUrlsRef.current = next;
+      setMediaPreviewUrls(next);
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(file);
+    const next = { ...mediaPreviewUrlsRef.current, [key]: nextUrl };
+    mediaPreviewUrlsRef.current = next;
+    setMediaPreviewUrls(next);
+  }, []);
+
+  const clearMediaPreviews = useCallback(() => {
+    Object.values(mediaPreviewUrlsRef.current).forEach((url) => {
+      if (url) URL.revokeObjectURL(url);
+    });
+    mediaPreviewUrlsRef.current = {};
+    setMediaPreviewUrls({});
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      mediaSelectionRef.current += 1;
+      Object.values(mediaPreviewUrlsRef.current).forEach((url) => {
+        if (url) URL.revokeObjectURL(url);
+      });
+      mediaPreviewUrlsRef.current = {};
+    };
+  }, []);
 
   const refresh = useCallback(async (preserveScroll = false, signal?: AbortSignal) => {
     const savedScrollY = preserveScroll && typeof window !== "undefined" ? window.scrollY : 0;
@@ -236,9 +276,11 @@ export default function AdminDashboard() {
 
   const closeEditor = useCallback((force = false) => {
     if (!force && (operationLockRef.current || busy || mediaBusy)) return;
+    mediaSelectionRef.current += 1;
+    clearMediaPreviews();
     conditionDraftsRef.current = [];
-    setModal(null); setModalId(null); setDraft({}); setTiers([]); setMediaFile(null); setPendingMediaFiles({}); setConditionDrafts([]); setMediaField("front"); setSiteMediaField("atmosphere"); setSiteBlocksMode(false); setMapEditorMode(false); setContactPhone(""); setContactEmail("");
-  }, [busy, mediaBusy]);
+    setModal(null); setModalId(null); setDraft({}); setTiers([]); setMediaFile(null); setPendingMediaFiles({}); setConditionDrafts([]); setMediaField("front"); setSiteMediaField("atmosphere"); setSiteBlocksMode(false); setMapEditorMode(false); setContactPhone(""); setContactEmail(""); setMediaBusy(false);
+  }, [busy, mediaBusy, clearMediaPreviews]);
 
   const cancelAndCloseEditor = useCallback(() => {
     if (operationLockRef.current) operationAbortRef.current?.abort();
@@ -302,6 +344,8 @@ export default function AdminDashboard() {
 
   async function openContactEditor() {
     try {
+      mediaSelectionRef.current += 1;
+      clearMediaPreviews();
       const row = (await fetchResource("salon_settings"))[0] ?? { ...emptyRecord.salon_settings };
       const next = { ...row,
         phone: text(row, "phone") || text(row, "display_phone"),
@@ -323,6 +367,8 @@ export default function AdminDashboard() {
 
   async function openSiteBlocksEditor() {
     try {
+      mediaSelectionRef.current += 1;
+      clearMediaPreviews();
       const row = (await fetchResource("salon_settings"))[0] ?? { ...emptyRecord.salon_settings };
       setModal("salon_settings");
       setSiteBlocksMode(true);
@@ -342,6 +388,8 @@ export default function AdminDashboard() {
   }
 
   function openMapEditor() {
+    mediaSelectionRef.current += 1;
+    clearMediaPreviews();
     const mapLink = links.find((link) => text(link, "link_key") === "yandex_maps");
     setModal("external_links");
     setMapEditorMode(true);
@@ -361,6 +409,8 @@ export default function AdminDashboard() {
       }
     }
     if (resource === "salon_settings" && !row) { void openContactEditor(); return; }
+    mediaSelectionRef.current += 1;
+    clearMediaPreviews();
     setSiteBlocksMode(false);
     setMapEditorMode(false);
     const next = row ? { ...row } : { ...emptyRecord[resource] };
@@ -725,6 +775,9 @@ export default function AdminDashboard() {
         const cleanupResource = modal === "offers" ? "offers" : "portfolio_items";
         await Promise.all(pendingUploadKeys.map((key) => fetchWithTimeout(`/api/admin/media?resource=${cleanupResource}&storage_key=${encodeURIComponent(key)}`, { method: "DELETE" }, ADMIN_MEDIA_TIMEOUT_MS).catch(() => undefined)));
       }
+      if (modal === "portfolio_items" || modal === "offers") clearMediaPreviews();
+      setMediaFile(null);
+      setPendingMediaFiles({});
       setMessage({ type: "error", text: error instanceof Error && error.name === "AbortError" ? "Сохранение отменено" : error instanceof Error ? error.message : "Не удалось сохранить изменения" });
     } finally {
       if (operationAbortRef.current === operationController) operationAbortRef.current = null;
@@ -771,7 +824,7 @@ export default function AdminDashboard() {
       const payload = await readJsonWithTimeout<{ error?: string }>(response);
       if (!response.ok) throw new Error(payload.error ?? "Не удалось удалить запись");
       conditionDraftsRef.current = [];
-      await refresh(true); setModal(null); setModalId(null); setDraft({}); setMediaFile(null); setConditionDrafts([]); setMessage({ type: "success", text: "Запись удалена" });
+      await refresh(true); clearMediaPreviews(); setModal(null); setModalId(null); setDraft({}); setMediaFile(null); setConditionDrafts([]); setMessage({ type: "success", text: "Запись удалена" });
     } catch (error) {
       setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось удалить запись" });
     } finally { operationLockRef.current = false; setBusy(false); }
@@ -785,6 +838,8 @@ export default function AdminDashboard() {
       try {
         const normalized = await prepareImageFile(file);
         if (selection !== mediaSelectionRef.current) return;
+        const previewKey: MediaPreviewKey = modal === "portfolio_items" ? "portfolio" : field;
+        replaceMediaPreview(previewKey, normalized);
         setMediaFile(normalized);
         setPendingMediaFiles((current) => ({ ...current, [field]: normalized }));
         // For an existing record the selected file is the complete action:
@@ -800,6 +855,7 @@ export default function AdminDashboard() {
         if (mediaInputRef.current) mediaInputRef.current.value = "";
         setMediaFile(null);
         setPendingMediaFiles((current) => ({ ...current, [field]: undefined }));
+        replaceMediaPreview(modal === "portfolio_items" ? "portfolio" : field, null);
         setMediaBusy(false);
         setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось подготовить изображение" });
       }
@@ -823,6 +879,7 @@ export default function AdminDashboard() {
       setDraft((current) => modal === "offers"
         ? { ...current, [`${selectedField}_storage_key`]: payload.storage_key, [`${selectedField}_url`]: "" }
         : { ...current, image_storage_key: payload.storage_key, image_url: "" });
+      replaceMediaPreview(modal === "portfolio_items" ? "portfolio" : selectedField, null);
       setMediaFile(null); setPendingMediaFiles((current) => ({ ...current, [selectedField]: undefined })); if (mediaInputRef.current) mediaInputRef.current.value = ""; await refresh(true, operationController.signal); setMessage({ type: "success", text: "Фотография загружена" });
     } catch (error) {
       // A rejected file must not remain selected: otherwise the primary
@@ -832,6 +889,7 @@ export default function AdminDashboard() {
       if (mediaInputRef.current) mediaInputRef.current.value = "";
       setMediaFile(null);
       setPendingMediaFiles((current) => ({ ...current, [selectedField]: undefined }));
+      replaceMediaPreview(modal === "portfolio_items" ? "portfolio" : selectedField, null);
       setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось загрузить фотографию" });
     } finally {
       if (operationAbortRef.current === operationController) operationAbortRef.current = null;
@@ -852,10 +910,12 @@ export default function AdminDashboard() {
       try {
         const normalized = await prepareImageFile(file);
         if (selection !== mediaSelectionRef.current) return;
+        replaceMediaPreview("atmosphere", normalized);
         await uploadSiteMedia(normalized, field);
       } catch (error) {
         if (selection !== mediaSelectionRef.current) return;
         if (mediaInputRef.current) mediaInputRef.current.value = "";
+        replaceMediaPreview("atmosphere", null);
         setMediaBusy(false);
         setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось подготовить изображение" });
       }
@@ -873,11 +933,13 @@ export default function AdminDashboard() {
       const keyName = field === "atmosphere" ? "atmosphere_image_storage_key" : "award_video_storage_key";
       const urlName = field === "atmosphere" ? "atmosphere_image_url" : "award_video_url";
       setDraft((current) => ({ ...current, [keyName]: payload.storage_key, [urlName]: "" }));
+      if (field === "atmosphere") replaceMediaPreview("atmosphere", null);
       if (mediaInputRef.current) mediaInputRef.current.value = "";
       await refresh(true);
       setMessage({ type: "success", text: field === "atmosphere" ? "Фотография блока обновлена" : "Видео блока обновлено" });
     } catch (error) {
       if (mediaInputRef.current) mediaInputRef.current.value = "";
+      if (field === "atmosphere") replaceMediaPreview("atmosphere", null);
       setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось загрузить файл" });
     } finally { operationLockRef.current = false; setMediaBusy(false); }
   }
@@ -913,6 +975,7 @@ export default function AdminDashboard() {
       const fieldQuery = modal === "offers" ? `&field=${field}` : "";
       const response = await fetchWithTimeout(`/api/admin/media?resource=${encodeURIComponent(modal)}&id=${encodeURIComponent(modalId)}${fieldQuery}`, { method: "DELETE" }, ADMIN_MEDIA_TIMEOUT_MS); const payload = await readJsonWithTimeout<{ error?: string }>(response, ADMIN_MEDIA_TIMEOUT_MS);
       if (!response.ok) throw new Error(payload.error ?? "Не удалось удалить фотографию");
+      replaceMediaPreview(modal === "portfolio_items" ? "portfolio" : field, null);
       await refresh(true); setDraft((current) => modal === "offers" ? { ...current, [`${field}_storage_key`]: null, [`${field}_url`]: "" } : { ...current, image_storage_key: null, image_url: "" }); setMessage({ type: "success", text: "Фотография удалена" });
     } catch (error) { setMessage({ type: "error", text: error instanceof Error ? error.message : "Не удалось удалить фотографию" }); } finally { operationLockRef.current = false; setMediaBusy(false); }
   }
@@ -920,14 +983,14 @@ export default function AdminDashboard() {
   const categoryName = (id: unknown) => text(categories.find((category) => String(category.id) === String(id)), "title", "Без категории");
   const servicesByCategory = (id: unknown) => visibleServices.filter((service) => String(service.category_id) === String(id));
   const contactLinks = links.filter((link) => ["max", "vk", "email", "other"].includes(text(link, "kind")) && !["phone", "email"].includes(text(link, "link_key")));
-  const currentImage = modal === "portfolio_items" ? imageUrl(draft) : modal === "offers" ? imageUrl(draft, mediaField) : siteBlocksMode ? siteBlockMediaUrl(draft, siteMediaField) : "";
+  const currentImage = modal === "portfolio_items" ? mediaPreviewUrls.portfolio || imageUrl(draft) : modal === "offers" ? mediaPreviewUrls[mediaField] || imageUrl(draft, mediaField) : siteBlocksMode ? mediaPreviewUrls.atmosphere || siteBlockMediaUrl(draft, siteMediaField) : "";
 
   function field(label: string, control: React.ReactNode, wide = false) {
     return <label className={wide ? "admin-visual-field admin-visual-field--wide" : "admin-visual-field"}><span>{label}</span>{control}</label>;
   }
 
   function offerMediaPanel(side: "front" | "back") {
-    const preview = imageUrl(draft, side);
+    const preview = mediaPreviewUrls[side] || imageUrl(draft, side);
     const pending = pendingMediaFiles[side];
     return <div className="admin-visual-media admin-offer-media" key={side}>
       <strong>{side === "front" ? "Лицевая сторона" : "Оборотная сторона"}</strong>
@@ -991,7 +1054,7 @@ export default function AdminDashboard() {
         {field("Заголовок награды", <input value={text(draft, "award_title", "«Хорошее место» — благодаря вам")} onChange={(event) => setField("award_title", event.target.value)} />)}
         {field("Текст награды", <textarea value={text(draft, "award_description")} onChange={(event) => setField("award_description", event.target.value)} />, true)}
         <div className="admin-visual-media admin-site-block-media"><strong>Видео награды</strong>{siteBlockMediaUrl(draft, "award_video") ? <video src={siteBlockMediaUrl(draft, "award_video")} controls muted preload="metadata" /> : <div className="admin-visual-media-empty">Видео не добавлено</div>}<div className="admin-media-controls"><input id="admin-site-video-input" ref={mediaInputRef} className="admin-file-input admin-file-input--hidden" type="file" accept="video/mp4,video/webm" disabled={mediaBusy || busy} onChange={(event) => handleSiteMediaSelected(event.target.files?.[0] ?? null, "award_video")} /><label htmlFor="admin-site-video-input" className="admin-upload-button">{mediaBusy && siteMediaField === "award_video" ? "Загружается…" : "Заменить видео"}</label><button type="button" className="admin-danger" disabled={mediaBusy || busy || !text(draft, "award_video_storage_key")} onClick={() => void removeSiteMedia("award_video")}>Удалить видео</button></div><small>MP4 или WebM, до 50 МБ.</small></div>
-        <div className="admin-visual-media admin-site-block-media"><strong>Фото блока «В салоне»</strong>{siteBlockMediaUrl(draft, "atmosphere") ? <img src={siteBlockMediaUrl(draft, "atmosphere")} alt="Текущее фото блока «В салоне»" /> : <div className="admin-visual-media-empty">Фотография не добавлена</div>}<div className="admin-media-controls"><input id="admin-site-atmosphere-input" ref={mediaInputRef} className="admin-file-input admin-file-input--hidden" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" disabled={mediaBusy || busy} onChange={(event) => handleSiteMediaSelected(event.target.files?.[0] ?? null, "atmosphere")} /><label htmlFor="admin-site-atmosphere-input" className="admin-upload-button">{mediaBusy && siteMediaField === "atmosphere" ? "Загружается…" : "Заменить фото"}</label><button type="button" className="admin-danger" disabled={mediaBusy || busy || !text(draft, "atmosphere_image_storage_key")} onClick={() => void removeSiteMedia("atmosphere")}>Удалить фото</button></div><small>JPEG, PNG или WebP, до 8 МБ.</small></div>
+        <div className="admin-visual-media admin-site-block-media"><strong>Фото блока «В салоне»</strong>{(mediaPreviewUrls.atmosphere || siteBlockMediaUrl(draft, "atmosphere")) ? <img src={mediaPreviewUrls.atmosphere || siteBlockMediaUrl(draft, "atmosphere")} alt="Текущее фото блока «В салоне»" /> : <div className="admin-visual-media-empty">Фотография не добавлена</div>}<div className="admin-media-controls"><input id="admin-site-atmosphere-input" ref={mediaInputRef} className="admin-file-input admin-file-input--hidden" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" disabled={mediaBusy || busy} onChange={(event) => handleSiteMediaSelected(event.target.files?.[0] ?? null, "atmosphere")} /><label htmlFor="admin-site-atmosphere-input" className="admin-upload-button">{mediaBusy && siteMediaField === "atmosphere" ? "Загружается…" : "Заменить фото"}</label><button type="button" className="admin-danger" disabled={mediaBusy || busy || !text(draft, "atmosphere_image_storage_key")} onClick={() => void removeSiteMedia("atmosphere")}>Удалить фото</button></div><small>JPEG, PNG или WebP, до 8 МБ.</small></div>
       </div> : <div className="admin-visual-form">{field("Название салона", <input value={text(draft, "salon_name")} onChange={(event) => setField("salon_name", event.target.value)} />)}{field("Телефон", <input value={contactPhone} onChange={(event) => setField("phone", event.target.value)} autoFocus />)}{field("Email", <input value={contactEmail} onChange={(event) => setField("email", event.target.value)} />)}{field("Адрес", <textarea value={text(draft, "street_address")} onChange={(event) => setField("street_address", event.target.value)} />, true)}</div>)}
       {modal === "working_hours" && <div className="admin-visual-form"><label className="admin-checkbox"><input type="checkbox" checked={draft.is_closed === 1} onChange={(event) => setField("is_closed", event.target.checked ? 1 : 0)} /><span>Выходной день</span></label>{draft.is_closed !== 1 && <div className="admin-duration-editor">{field("Открытие", <input type="time" value={text(draft, "opens_at")} onChange={(event) => setField("opens_at", event.target.value)} />)}{field("Закрытие", <input type="time" value={text(draft, "closes_at")} onChange={(event) => setField("closes_at", event.target.value)} />)}</div>}</div>}
       <div className="admin-visual-modal-actions"><button type="button" className="button" disabled={busy || mediaBusy} onClick={() => void saveEditor()}>{busy ? "Сохраняем…" : "Сохранить"}</button><button type="button" className="admin-secondary" onClick={cancelAndCloseEditor}>{busy || mediaBusy ? "Отменить" : "Отмена"}</button>{modalId && modal !== "salon_settings" && modal !== "working_hours" && !mapEditorMode && <button type="button" className="admin-danger admin-delete-record" disabled={busy || mediaBusy} onClick={() => void deleteObject(modal, { id: modalId })}>Удалить запись</button>}</div>

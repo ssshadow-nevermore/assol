@@ -82,6 +82,42 @@ test("portfolio editor keeps legacy and managed media paths and supports replace
   assert.match(source, /text\(draft, "description"\)/);
 });
 
+test("all image editors preview normalized files and clean temporary object URLs", () => {
+  assert.match(source, /type MediaPreviewKey = "portfolio" \| "front" \| "back" \| "atmosphere"/);
+  assert.match(source, /const \[mediaPreviewUrls, setMediaPreviewUrls\] = useState<MediaPreviewUrls>\(\{\}\)/);
+  assert.match(source, /const mediaPreviewUrlsRef = useRef<MediaPreviewUrls>\(\{\}\)/);
+  assert.match(source, /const replaceMediaPreview = useCallback\(\(key: MediaPreviewKey, file: File \| null\)/);
+  assert.match(source, /URL\.createObjectURL\(file\)/);
+  assert.match(source, /URL\.revokeObjectURL\(previousUrl\)/);
+  assert.match(source, /Object\.values\(mediaPreviewUrlsRef\.current\)\.forEach\(\(url\) => \{[\s\S]*?URL\.revokeObjectURL\(url\)/);
+  assert.match(source, /const currentImage = modal === "portfolio_items" \? mediaPreviewUrls\.portfolio \|\| imageUrl\(draft\)/);
+  assert.match(source, /const previewKey: MediaPreviewKey = modal === "portfolio_items" \? "portfolio" : field/);
+  assert.match(source, /replaceMediaPreview\(previewKey, normalized\)/);
+  assert.match(source, /const preview = mediaPreviewUrls\[side\] \|\| imageUrl\(draft, side\)/);
+  assert.match(source, /replaceMediaPreview\(modal === "portfolio_items" \? "portfolio" : selectedField, null\)/);
+  assert.match(source, /replaceMediaPreview\("atmosphere", normalized\)/);
+  assert.match(source, /replaceMediaPreview\("atmosphere", null\)/);
+  assert.match(source, /mediaPreviewUrls\.atmosphere \|\| siteBlockMediaUrl\(draft, "atmosphere"\)/);
+  assert.match(source, /clearMediaPreviews\(\);[\s\S]*setModal\(null\)/);
+  assert.match(source, /setPendingMediaFiles\(\{\}\)/);
+});
+
+test("offer front and back previews remain independent and prefer local files", () => {
+  assert.match(source, /mediaPreviewUrls\[side\] \|\| imageUrl\(draft, side\)/);
+  assert.match(source, /replaceMediaPreview\(previewKey, normalized\)/);
+  assert.match(source, /setPendingMediaFiles\(\(current\) => \(\{ \.\.\.current, \[field\]: normalized \}\)\)/);
+  assert.match(source, /replaceMediaPreview\(modal === "portfolio_items" \? "portfolio" : field, null\)/);
+  assert.match(source, /replaceMediaPreview\(modal === "portfolio_items" \? "portfolio" : selectedField, null\)/);
+  assert.match(source, /offerMediaPanel\("front"\).*offerMediaPanel\("back"\)/s);
+});
+
+test("image previews are cleared on success, error, close, and unmount", () => {
+  assert.match(source, /if \(modal === "portfolio_items" \|\| modal === "offers"\) clearMediaPreviews\(\)/);
+  assert.match(source, /await refresh\(true\); clearMediaPreviews\(\); setModal\(null\)/);
+  assert.match(source, /return \(\) => \{[\s\S]*?Object\.values\(mediaPreviewUrlsRef\.current\)/);
+  assert.match(source, /if \(field === "atmosphere"\) replaceMediaPreview\("atmosphere", null\)/);
+});
+
 test("existing portfolio records may clear media without being rejected as new records", async () => {
   assert.match(source, /if \(!modalId && !text\(body, "image_url"\) && !text\(body, "image_storage_key"\)\)/);
   const adminApiSource = await readFile(new URL("../app/api/admin/admin-api.ts", import.meta.url), "utf8");
