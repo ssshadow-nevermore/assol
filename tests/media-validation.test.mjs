@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const validation = await import("../app/api/admin/media-validation.ts");
@@ -8,8 +9,28 @@ test("media API rejects non-whitelisted MIME types before storage access", async
   await assert.rejects(() => validation.validateImageFile(new File(["not an image"], "note.txt", { type: "text/plain" })), /JPEG, PNG и WebP/);
 });
 
-test("media API rejects files larger than 8 MB before storage access", async () => {
-  await assert.rejects(() => validation.validateImageFile(new File([new Uint8Array(8 * 1024 * 1024 + 1)], "large.png", { type: "image/png" })), /8 МБ/);
+test("media API enforces the 15 MB image limit with an inclusive boundary", async () => {
+  const maxBytes = 15 * 1024 * 1024;
+  assert.equal(validation.MAX_IMAGE_BYTES, maxBytes);
+  const jpeg = (size) => {
+    const bytes = new Uint8Array(size);
+    bytes.set([0xff, 0xd8, 0xff, 0xe0]);
+    return new File([bytes], "photo.jpg", { type: "image/jpeg" });
+  };
+  assert.equal((await validation.validateImageFile(jpeg(maxBytes - 1))).contentType, "image/jpeg");
+  assert.equal((await validation.validateImageFile(jpeg(maxBytes))).contentType, "image/jpeg");
+  await assert.rejects(() => validation.validateImageFile(jpeg(maxBytes + 1)), /Максимальный размер изображения — 15 МБ/);
+});
+
+test("media API keeps the separate 50 MB video limit", () => {
+  assert.equal(validation.MAX_VIDEO_BYTES, 50 * 1024 * 1024);
+});
+
+test("framework and Nginx upload limits allow the 15 MB image payload", async () => {
+  const nextConfig = await readFile(new URL("../next.config.ts", import.meta.url), "utf8");
+  const nginxConfig = await readFile(new URL("../deploy/nginx/assol-site.conf.example", import.meta.url), "utf8");
+  assert.match(nextConfig, /bodySizeLimit:\s*["']15mb["']/);
+  assert.match(nginxConfig, /client_max_body_size\s+15m/);
 });
 
 test("media API rejects unsafe record ids", async () => {

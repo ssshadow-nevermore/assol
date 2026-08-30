@@ -12,8 +12,8 @@ server {
     listen [::]:80;
     server_name example.com www.example.com;
 
-    # Keep this aligned with the application media validator (8 MiB).
-    client_max_body_size 8m;
+    # Keep this aligned with the application media validator (15 MiB).
+    client_max_body_size 15m;
 
     location / {
         proxy_pass http://assol_site;

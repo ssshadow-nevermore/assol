@@ -102,6 +102,12 @@ test("all image editors preview normalized files and clean temporary object URLs
   assert.match(source, /setPendingMediaFiles\(\{\}\)/);
 });
 
+test("image size guidance uses the 15 MB limit and oversized errors stay inside the modal", () => {
+  assert.equal((source.match(/до 15 МБ\./g) ?? []).length, 3);
+  assert.doesNotMatch(source, /до 8 МБ/);
+  assert.match(source, /admin-message admin-message--\$\{message\.type\}/);
+});
+
 test("offer front and back previews remain independent and prefer local files", () => {
   assert.match(source, /mediaPreviewUrls\[side\] \|\| imageUrl\(draft, side\)/);
   assert.match(source, /replaceMediaPreview\(previewKey, normalized\)/);

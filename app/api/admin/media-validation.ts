@@ -1,4 +1,4 @@
-export const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+export const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const ALLOWED_DECLARED_IMAGE_TYPES = new Set(["", "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
@@ -47,11 +47,11 @@ async function readArrayBufferWithTimeout(file: { arrayBuffer(): Promise<ArrayBu
 }
 
 export async function validateImageFile(file: { size: number; type: string; arrayBuffer(): Promise<ArrayBuffer> }): Promise<{ bytes: ArrayBuffer; contentType: string; extension: string }> {
-  if (file.size < 0 || file.size > MAX_IMAGE_BYTES) throw new MediaValidationError("Изображение должно быть размером от 1 байта до 8 МБ");
+  if (file.size < 0 || file.size > MAX_IMAGE_BYTES) throw new MediaValidationError("Файл слишком большой. Максимальный размер изображения — 15 МБ.");
   const declaredType = String(file.type ?? "").toLowerCase();
   if (!ALLOWED_DECLARED_IMAGE_TYPES.has(declaredType)) throw new MediaValidationError("Разрешены только JPEG, PNG и WebP");
   const bytes = new Uint8Array(await readArrayBufferWithTimeout(file));
-  if (bytes.byteLength <= 0 || bytes.byteLength > MAX_IMAGE_BYTES) throw new MediaValidationError("Изображение должно быть размером от 1 байта до 8 МБ");
+  if (bytes.byteLength <= 0 || bytes.byteLength > MAX_IMAGE_BYTES) throw new MediaValidationError("Файл слишком большой. Максимальный размер изображения — 15 МБ.");
   const detectedType = detectImageType(bytes);
   // HEIC/HEIF must be converted in the browser because the public image
   // pipeline and object storage contract intentionally remain JPEG/PNG/WebP.

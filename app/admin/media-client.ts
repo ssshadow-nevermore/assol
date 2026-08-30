@@ -8,7 +8,7 @@
 
 export const CLIENT_IMAGE_READ_TIMEOUT_MS = 15_000;
 export const CLIENT_IMAGE_DECODE_TIMEOUT_MS = 20_000;
-export const CLIENT_MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+export const CLIENT_MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 
 export type NormalizedImageType = "image/jpeg" | "image/png" | "image/webp";
 type DetectedImageType = NormalizedImageType | "image/heic" | "image/heif" | "image/avif";
@@ -80,11 +80,11 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: s
 
 async function readBytes(file: ImageFileLike, timeoutMs: number): Promise<ArrayBuffer> {
   if (!Number.isFinite(file.size) || file.size < 0 || file.size > CLIENT_MAX_IMAGE_BYTES) {
-    throw new ImagePreparationError("Изображение должно быть размером от 1 байта до 8 МБ");
+    throw new ImagePreparationError("Файл слишком большой. Максимальный размер изображения — 15 МБ.");
   }
   const bytes = await withTimeout(file.arrayBuffer(), timeoutMs, "Не удалось прочитать изображение вовремя. Выберите файл ещё раз.");
   if (bytes.byteLength <= 0 || bytes.byteLength > CLIENT_MAX_IMAGE_BYTES) {
-    throw new ImagePreparationError("Изображение должно быть размером от 1 байта до 8 МБ");
+    throw new ImagePreparationError("Файл слишком большой. Максимальный размер изображения — 15 МБ.");
   }
   return bytes;
 }
@@ -152,7 +152,7 @@ async function decodeToJpeg(file: ImageFileLike, bytes: ArrayBuffer, timeoutMs: 
     if (bitmap) context.drawImage(bitmap, 0, 0);
     else if (image) context.drawImage(image, 0, 0);
     const jpeg = await withTimeout(new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new ImagePreparationError("Не удалось преобразовать изображение в JPEG.")), "image/jpeg", 0.92)), timeoutMs, "Преобразование изображения выполняется слишком долго.");
-    if (jpeg.size > CLIENT_MAX_IMAGE_BYTES) throw new ImagePreparationError("Преобразованное изображение превышает 8 МБ");
+    if (jpeg.size > CLIENT_MAX_IMAGE_BYTES) throw new ImagePreparationError("Преобразованное изображение превышает 15 МБ");
     return new File([jpeg], "upload.jpg", { type: "image/jpeg", lastModified: file.lastModified ?? Date.now() });
   } catch (error) {
     reportDecodeDiagnostic(file, new Uint8Array(bytes), detectedType, error);

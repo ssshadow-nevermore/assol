@@ -114,9 +114,17 @@ test("client rejects an unsupported empty-MIME document with a user-facing image
   await assert.rejects(() => client.prepareImageFile(pdf), /Тип файла не соответствует содержимому изображения/);
 });
 
-test("client reports the existing 8 MB limit for oversized images", async () => {
-  const oversized = new File([new Uint8Array(8 * 1024 * 1024 + 1)], "old-photo.jpg", { type: "" });
-  await assert.rejects(() => client.prepareImageFile(oversized), /размером от 1 байта до 8 МБ/);
+test("client accepts images below and at 15 MB and rejects larger files", async () => {
+  const maxBytes = 15 * 1024 * 1024;
+  assert.equal(client.CLIENT_MAX_IMAGE_BYTES, maxBytes);
+  const jpeg = (size) => {
+    const bytes = new Uint8Array(size);
+    bytes.set([0xff, 0xd8, 0xff, 0xe0]);
+    return new File([bytes], "photo.jpg", { type: "" });
+  };
+  assert.equal((await client.prepareImageFile(jpeg(maxBytes - 1))).type, "image/jpeg");
+  assert.equal((await client.prepareImageFile(jpeg(maxBytes))).type, "image/jpeg");
+  await assert.rejects(() => client.prepareImageFile(jpeg(maxBytes + 1)), /Максимальный размер изображения — 15 МБ/);
 });
 
 test("client fails a raw HEIC in non-browser runtimes instead of hanging", async () => {
