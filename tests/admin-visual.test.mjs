@@ -416,6 +416,8 @@ test("media chooser is a real file label and uploads the selected file", () => {
   assert.match(source, /prepareImageFile\(file\)/);
   assert.match(source, /uploadMedia\(normalized, field\)/);
   assert.match(source, /setPendingMediaFiles/);
+  assert.equal((source.match(/accept="image\/\*"/g) ?? []).length, 3);
+  assert.doesNotMatch(source, /accept="image\/jpeg,image\/png,image\/webp,image\/heic,image\/heif"/);
 });
 
 test("service editor persists structured pricing and duration", async () => {
