@@ -376,6 +376,13 @@ async function rowById(database: SqliteDatabase, resource: AdminResource, id: st
   return result.results[0] ?? null;
 }
 
+function isPureSortOrderPatch(resource: AdminResource, input: JsonRecord): boolean {
+  return resource !== "salon_settings"
+    && columnsByResource[resource].includes("sort_order")
+    && Object.keys(input).length === 1
+    && Object.prototype.hasOwnProperty.call(input, "sort_order");
+}
+
 async function requireForeignKeys(database: SqliteDatabase, resource: AdminResource, record: NormalizedRecord): Promise<void> {
   const checks: Array<[string, string | number, string]> = [];
   if (resource === "services" && record.category_id) checks.push(["service_categories", record.category_id, "category_id"]);
@@ -453,6 +460,13 @@ export async function updateResource(resource: AdminResource, id: string, input:
   if (typeof existing.id !== "string" && typeof existing.id !== "number") throw new AdminApiError("Некорректный id записи", 500);
   assertRequiredExternalLinkMutation(resource, existing, input, "update");
   const existingId = existing.id;
+  if (isPureSortOrderPatch(resource, input)) {
+    const sortOrder = integerValue(input.sort_order, "sort_order");
+    await database.prepare(`UPDATE ${tableByResource[resource]} SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).bind(sortOrder, existingId).run();
+    const row = await rowById(database, resource, existingId);
+    if (!row) throw new AdminApiError("Запись обновлена, но не прочитана обратно", 500);
+    return row;
+  }
   const record = normalize(resource, { ...input, id: existingId }, existing);
   await requireForeignKeys(database, resource, record);
   const columns = columnsByResource[resource].filter((column) => column !== "id");

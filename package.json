@@ -12,7 +12,7 @@
     "start:local-prod": "node scripts/start-local-prod.mjs",
     "db:init": "node scripts/init-sqlite.mjs",
     "db:backup": "node scripts/backup-sqlite.mjs",
-    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/yandex-storage.test.mjs tests/media-validation.test.mjs tests/media-client.test.mjs tests/admin-visual.test.mjs tests/admin-access.test.mjs tests/masters.test.mjs tests/map-link.test.mjs tests/working-hours-validation.test.mjs",
+    "test": "npm run build && node --experimental-transform-types --experimental-loader ./tests/resolve-ts-loader.mjs --test tests/rendered-html.test.mjs tests/yandex-storage.test.mjs tests/media-validation.test.mjs tests/media-client.test.mjs tests/admin-visual.test.mjs tests/admin-access.test.mjs tests/admin-api.test.mjs tests/masters.test.mjs tests/map-link.test.mjs tests/working-hours-validation.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "db:seed:generate": "node scripts/generate-d1-seed.mjs",
