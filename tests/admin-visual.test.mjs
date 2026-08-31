@@ -238,6 +238,21 @@ test("visual admin supports drag-and-drop ordering without exposing sort fields"
   assert.doesNotMatch(source, /Порядок отображения/);
 });
 
+test("services have accessible one-step order controls scoped to their category", () => {
+  assert.match(source, /function moveService\(categoryRows: Row\[\], index: number, direction: -1 \| 1\)/);
+  assert.match(source, /reorderItems\("services", categoryRows, String\(current\.id\), String\(target\.id\)\)/);
+  assert.match(source, /categoryServices\.map\(\(service, serviceIndex\)/);
+  assert.match(source, /aria-label="Переместить услугу выше"/);
+  assert.match(source, /aria-label="Переместить услугу ниже"/);
+  assert.match(source, /disabled=\{busy \|\| mediaBusy \|\| serviceIndex === 0\}/);
+  assert.match(source, /disabled=\{busy \|\| mediaBusy \|\| serviceIndex === categoryServices\.length - 1\}/);
+  assert.match(source, /const rowsToPersist = resource === "services" \? mergeServiceOrder\(rows, next\) : next/);
+  assert.match(source, /const visibleIds = new Set\(visibleRows\.map/);
+  assert.match(source, /\.filter\(\(service\) => String\(service\.category_id\) === String\(categoryId\)\)/);
+  assert.match(source, /await refresh\(true\)/);
+  assert.match(siteDataSource, /ORDER BY category_id, sort_order/);
+});
+
 test("offers remain data-driven and extra offers use a carousel", () => {
   assert.match(benefitsSource, /offers\.filter/);
   assert.match(benefitsSource, /benefit-extra-carousel/);
