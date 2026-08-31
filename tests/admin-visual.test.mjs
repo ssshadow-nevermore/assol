@@ -22,6 +22,13 @@ test("visual admin exposes only client-facing sections", () => {
   assert.doesNotMatch(source, /aria-label="Тип контакта"/);
 });
 
+test("admin back link uses a plain public-root anchor", () => {
+  assert.match(source, /<a className="admin-back" href="\/">Вернуться на сайт ↗<\/a>/);
+  assert.doesNotMatch(source, /<Link[^>]*className="admin-back"/);
+  assert.doesNotMatch(source, /import Link from "next\/link"/);
+  assert.doesNotMatch(source, /<a className="admin-back" href="\/"[^>]*onClick/);
+});
+
 test("master editor exposes only text fields and no photo controls", () => {
   assert.match(source, /id="admin-masters"/);
   assert.match(source, /Редактируйте имя, специализацию и виды услуг/);
