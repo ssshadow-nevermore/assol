@@ -358,12 +358,18 @@ test("service directions keep the same text in an animated marquee", () => {
   assert.match(stylesSource, /prefers-reduced-motion:reduce/);
 });
 
-test("carousels remain safe when their data is empty or shrinks", async () => {
+test("portfolio gallery remains safe when its data is empty or filtered", async () => {
   const portfolioSource = await readFile(new URL("../app/PortfolioCarousel.tsx", import.meta.url), "utf8");
   assert.match(portfolioSource, /works\.length === 0/);
-  assert.match(portfolioSource, /works\.length < 2/);
-  assert.match(portfolioSource, /Math\.min\(activeIndex, works\.length - 1\)/);
-  assert.match(portfolioSource, /className="work-description"/);
+  assert.match(portfolioSource, /className="portfolio-filters"/);
+  assert.match(portfolioSource, /className="portfolio-grid"/);
+  assert.match(portfolioSource, /const visibleWorks = filteredWorks\.slice\(0, visibleCount\)/);
+  assert.match(portfolioSource, /const PAGE_SIZE = 12/);
+  assert.match(portfolioSource, /Показать ещё/);
+  assert.match(portfolioSource, /createPortal/);
+  assert.match(portfolioSource, /portfolio-info-card/);
+  assert.match(portfolioSource, /portfolio-lightbox/);
+  assert.match(portfolioSource, /event\.key !== "Escape"/);
 });
 
 test("new offer media is staged before the database row is written", () => {

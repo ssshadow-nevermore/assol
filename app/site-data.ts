@@ -325,9 +325,15 @@ async function loadFromDatabase(database: SqliteDatabase): Promise<SiteData> {
   for (const key of ["phone", "max", "email", "vk", "dikidi_widget", "dikidi_script", "yandex_maps", "yandex_reviews", "yandex_reviews_widget", "yandex_map_widget_desktop", "yandex_map_widget_mobile"]) {
     if (!links[key]) throw new Error(`SQLite external link is missing: ${key}`);
   }
+  const categoryLabels = new Map<string, string>();
+  for (const category of categoryRows) {
+    categoryLabels.set(category.id, category.title);
+    categoryLabels.set(category.legacy_id, category.title);
+  }
   const portfolio: PortfolioWork[] = portfolioRows.map((row) => ({
     id: row.id,
     categoryId: row.service_category_id,
+    categoryLabel: row.service_category_id ? categoryLabels.get(row.service_category_id) : undefined,
     src: resolveMediaUrl(row.image_url, row.image_storage_key),
     alt: row.alt_text,
     label: row.title,

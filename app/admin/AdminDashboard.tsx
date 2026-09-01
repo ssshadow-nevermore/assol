@@ -722,7 +722,7 @@ export default function AdminDashboard() {
         // let the cleared media fields persist instead of trapping the user in
         // the modal with a validation error.
         if (!modalId && !text(body, "image_url") && !text(body, "image_storage_key")) throw new Error("Добавьте фотографию");
-        body.sort_order = modalId ? body.sort_order : 999;
+        body.sort_order = modalId ? body.sort_order : (portfolio.length ? Math.min(...portfolio.map((item) => number(item, "sort_order"))) - 1 : 0);
       }
       if (modal === "masters") {
         if (!text(body, "name").trim()) throw new Error("Поле «Имя» обязательно");

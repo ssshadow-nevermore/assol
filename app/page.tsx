@@ -121,7 +121,7 @@ export default async function Home() {
 
         <section className="section works" id="works">
           <div className="section-heading light"><div><p className="eyebrow">Портфолио</p><h2>Результат говорит<br /><em>сам за себя</em></h2></div><p>Реальные работы мастеров «Ассоль». Листайте, вдохновляйтесь и сохраняйте идеи к визиту.</p></div>
-          <PortfolioCarousel works={portfolio} bookingUrl={bookingUrl} />
+          <PortfolioCarousel works={portfolio} bookingUrl={bookingUrl} categories={categories} />
           <a className="button button-light" href={vkUrl}>Больше работ во ВКонтакте <span>↗</span></a>
         </section>
 

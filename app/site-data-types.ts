@@ -48,6 +48,7 @@ export type SiteExternalLink = {
 export type PortfolioWork = {
   id: string;
   categoryId: string | null;
+  categoryLabel?: string;
   src: string;
   alt: string;
   label: string;
