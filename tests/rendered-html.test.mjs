@@ -84,6 +84,14 @@ test("renders the salon landing page with DIKIDI booking links", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview|\/api\/booking/i);
 });
 
+test("all service categories start collapsed in production HTML", async () => {
+  const html = await (await render("/")).text();
+  const categoryTags = [...html.matchAll(/<details\b[^>]*class="service-category"[^>]*>/gi)].map(([tag]) => tag);
+
+  assert.ok(categoryTags.length > 0, "production HTML must render the service categories");
+  assert.ok(categoryTags.every((tag) => !/\sopen(?:\s|=|>)/i.test(tag)), "no service category should be expanded on initial load");
+});
+
 test("production SEO metadata and structured data use the canonical domain", async () => {
   const [layout, page] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),

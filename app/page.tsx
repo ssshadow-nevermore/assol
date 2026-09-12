@@ -94,8 +94,8 @@ export default async function Home() {
           <BenefitsShowcase offers={offers} />
           <div className="section-heading"><div><p className="eyebrow">Полный прайс</p><h2>Все услуги<br /><em>в одном месте</em></h2></div><p>Выберите направление и найдите процедуру, которая подчеркнёт вашу красоту и подарит ощущение обновления.</p></div>
           <div className="service-catalog">
-            {categories.map((category, index) => (
-              <details className="service-category" key={category.id} open={index === 0}>
+            {categories.map((category) => (
+              <details className="service-category" key={category.id}>
                 <summary>
                   <span className="service-category-title"><strong>{category.title}</strong><small>{category.description}</small></span>
                   <span className="service-category-price">{category.priceFrom}</span>
